@@ -66,7 +66,18 @@ export function VirtualKeyboard() {
         toggleModifier(key.modifierBit);
         return;
       }
-      sendKeyboard(modifier, key.code);
+
+      // Strip Shift from arrow keys so cursor moves cleanly without highlighting/selecting text
+      const effectiveModifier = key.isArrow
+        ? modifier & ~MODIFIER_MASK.LEFT_SHIFT & ~MODIFIER_MASK.RIGHT_SHIFT
+        : modifier;
+
+      sendKeyboard(effectiveModifier, key.code);
+
+      // Auto-unlatch single-press Shift after typing a character
+      if (!key.isModifier && !key.isArrow && (modifier & MODIFIER_MASK.LEFT_SHIFT)) {
+        setModifier(prev => prev & ~MODIFIER_MASK.LEFT_SHIFT);
+      }
     },
     [modifier, sendKeyboard, toggleModifier],
   );
@@ -75,7 +86,10 @@ export function VirtualKeyboard() {
     (key: KeyDefinition) => {
       setActiveKey(null);
       if (key.isModifier) return;
-      sendKeyboard(modifier, 0);
+      const effectiveModifier = key.isArrow
+        ? modifier & ~MODIFIER_MASK.LEFT_SHIFT & ~MODIFIER_MASK.RIGHT_SHIFT
+        : modifier;
+      sendKeyboard(effectiveModifier, 0);
     },
     [modifier, sendKeyboard],
   );

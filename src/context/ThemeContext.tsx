@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { DARK_THEME, LIGHT_THEME, ThemeColors } from '../theme/theme';
 
-interface ThemeContextType {
+export interface ThemeContextType {
   isDark: boolean;
   theme: ThemeColors;
   toggleTheme: () => void;
   setDarkMode: (dark: boolean) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType>({
+export const ThemeContext = createContext<ThemeContextType>({
   isDark: true,
   theme: DARK_THEME,
   toggleTheme: () => {},
@@ -33,9 +33,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [isDark, theme],
   );
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
-export function useTheme() {
+export function useTheme(): ThemeContextType {
   return useContext(ThemeContext);
 }
+
