@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,11 +29,8 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Node Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Make Gradlew Executable
         run: chmod +x android/gradlew
@@ -49,3 +46,4 @@ jobs:
           name: VirtualKeyboard-APK
           path: android/app/build/outputs/apk/release/*.apk
           retention-days: 30
+
