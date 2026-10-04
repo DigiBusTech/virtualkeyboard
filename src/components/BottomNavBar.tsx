@@ -16,10 +16,10 @@ export function BottomNavBar({
   isConnected,
 }: BottomNavBarProps) {
   const tabs: { key: TabType; label: string; icon: string }[] = [
-    { key: 'keyboard', label: 'Keyboard', icon: '⌨️' },
-    { key: 'trackpad', label: 'Trackpad', icon: '🖱️' },
-    { key: 'pairing', label: 'Pairing', icon: '📡' },
-    { key: 'setup', label: 'Setup', icon: '⚙️' },
+    { key: 'keyboard', label: 'Keyboard', icon: '\u2328' },
+    { key: 'trackpad', label: 'Trackpad', icon: '\uD83D\uDDB1' },
+    { key: 'pairing', label: 'Pairing', icon: '\uD83D\uDCE1' },
+    { key: 'setup', label: 'Setup', icon: '\u2699' },
   ];
 
   return (
@@ -37,10 +37,10 @@ export function BottomNavBar({
               <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
                 {tab.label}
               </Text>
-              {isActive && <View style={styles.activeGlowDot} />}
-              {tab.key === 'pairing' && isConnected && (
+              {isActive ? <View style={styles.activeGlowDot} /> : null}
+              {tab.key === 'pairing' && isConnected ? (
                 <View style={styles.connectedDot} />
-              )}
+              ) : null}
             </TouchableOpacity>
           );
         })}
@@ -109,3 +109,4 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.accentEmerald,
   },
 });
+

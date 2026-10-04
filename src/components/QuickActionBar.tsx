@@ -10,7 +10,7 @@ interface QuickActionBarProps {
 export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
   return (
     <ScrollView
-      horizontal
+      horizontal={true}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.quickActionBar}>
       <TouchableOpacity
@@ -40,38 +40,39 @@ export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(MODIFIER_MASK.LEFT_ALT, HID_KEY_CODES.TAB)}>
-        <Text style={styles.quickActionText}>Alt+Tab 🗔</Text>
+        <Text style={styles.quickActionText}>Alt+Tab</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(MODIFIER_MASK.LEFT_GUI, HID_KEY_CODES.D)}>
-        <Text style={styles.quickActionText}>Desktop 💻</Text>
+        <Text style={styles.quickActionText}>Desktop</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(0, HID_KEY_CODES.PRINT_SCREEN)}>
-        <Text style={styles.quickActionText}>PrtScn 📷</Text>
+        <Text style={styles.quickActionText}>PrtScn</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(0, HID_KEY_CODES.MUTE)}>
-        <Text style={styles.quickActionText}>Mute 🔇</Text>
+        <Text style={styles.quickActionText}>Mute</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_DOWN)}>
-        <Text style={styles.quickActionText}>Vol - 🔉</Text>
+        <Text style={styles.quickActionText}>Vol -</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.quickActionKey}
         onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_UP)}>
-        <Text style={styles.quickActionText}>Vol + 🔊</Text>
+        <Text style={styles.quickActionText}>Vol +</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
+

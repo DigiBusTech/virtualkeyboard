@@ -86,37 +86,23 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
     Linking.openURL(THEME.branding.website).catch(() => {});
   };
 
+  const orbStyle = [styles.glowOrb, { transform: [{ scale: pulseAnim }] }];
+  const contentStyle = [styles.content, { opacity: fadeAnim }];
+  const ringStyle = [styles.outerRing, { transform: [{ rotate: spin }] }];
+  const badgeStyle = [styles.logoBadge, { transform: [{ scale: pulseAnim }] }];
+  const barStyle = [styles.progressBar, { width: progressWidth }];
+
   return (
     <View style={styles.container}>
       {/* Background glow circle */}
-      <Animated.View
-        style={[
-          styles.glowOrb,
-          {
-            transform: [{ scale: pulseAnim }],
-          },
-        ]}
-      />
+      <Animated.View style={orbStyle}></Animated.View>
 
-      <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+      <Animated.View style={contentStyle}>
         {/* Animated Logo Container */}
         <View style={styles.logoWrapper}>
-          <Animated.View
-            style={[
-              styles.outerRing,
-              {
-                transform: [{ rotate: spin }],
-              },
-            ]}
-          />
-          <Animated.View
-            style={[
-              styles.logoBadge,
-              {
-                transform: [{ scale: pulseAnim }],
-              },
-            ]}>
-            <Text style={styles.logoEmoji}>⌨️</Text>
+          <Animated.View style={ringStyle}></Animated.View>
+          <Animated.View style={badgeStyle}>
+            <Text style={styles.logoEmoji}>{'\u2328\uFE0F'}</Text>
           </Animated.View>
         </View>
 
@@ -133,12 +119,12 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
           activeOpacity={0.8}>
           <Text style={styles.brandLabel}>POWERED BY</Text>
           <Text style={styles.brandName}>{THEME.branding.company}</Text>
-          <Text style={styles.brandUrl}>digibustech.com ↗</Text>
+          <Text style={styles.brandUrl}>digibustech.com {'\u2197'}</Text>
         </TouchableOpacity>
 
         {/* Progress Preloader Bar */}
         <View style={styles.progressTrack}>
-          <Animated.View style={[styles.progressBar, { width: progressWidth }]} />
+          <Animated.View style={barStyle}></Animated.View>
         </View>
         <Text style={styles.loadingText}>Initializing Bluetooth HID Profile...</Text>
 
@@ -147,9 +133,10 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
           style={styles.skipButton}
           onPress={onFinish}
           activeOpacity={0.7}>
-          <Text style={styles.skipText}>Tap anywhere to start →</Text>
+          <Text style={styles.skipText}>Tap anywhere to start {'\u2192'}</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
   );
 }
+
