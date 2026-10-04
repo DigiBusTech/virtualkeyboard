@@ -8,24 +8,29 @@ import {
   TapGestureHandler,
   TapGestureHandlerStateChangeEvent,
 } from 'react-native-gesture-handler';
+import { useTheme } from '../context/ThemeContext';
 import { useBluetoothHid } from '../hooks/useBluetoothHid';
 import { styles } from './Trackpad.styles';
 
 const SENSITIVITIES = [1.0, 1.5, 2.0, 2.5] as const;
 
 export function Trackpad() {
+  const { theme } = useTheme();
   const { sendMouse, connectionState, connectedDevice } = useBluetoothHid();
   const [sensitivity, setSensitivity] = useState<number>(1.5);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   const lastX = useRef<number>(0);
   const lastY = useRef<number>(0);
   const lastSendTime = useRef<number>(0);
   const accumulatedX = useRef<number>(0);
   const accumulatedY = useRef<number>(0);
+  const scrollAccumulator = useRef<number>(0);
 
   const panRef = useRef(null);
   const singleTapRef = useRef(null);
   const twoFingerTapRef = useRef(null);
+  const scrollRollerRef = useRef(null);
 
   // 1-finger tap -> Left Click
   const triggerLeftClick = useCallback(() => {
@@ -42,6 +47,48 @@ export function Trackpad() {
       sendMouse(0, 0, 0, 0);
     }, 40);
   }, [sendMouse]);
+
+  // Middle Click
+  const triggerMiddleClick = useCallback(() => {
+    sendMouse(4, 0, 0, 0);
+    setTimeout(() => {
+      sendMouse(0, 0, 0, 0);
+    }, 40);
+  }, [sendMouse]);
+
+  // Continuous drag scroll handler
+  const handleScrollPan = useCallback(
+    (event: PanGestureHandlerGestureEvent) => {
+      const dy = event.nativeEvent.translationY;
+      const diff = dy - scrollAccumulator.current;
+      if (Math.abs(diff) >= 8) {
+        const steps = Math.trunc(diff / 8);
+        // Dragging finger up (diff < 0) -> scroll up (+); dragging finger down (diff > 0) -> scroll down (-)
+        sendMouse(0, 0, 0, -steps);
+        scrollAccumulator.current += steps * 8;
+      }
+    },
+    [sendMouse],
+  );
+
+  const handleScrollPanState = useCallback(
+    (event: PanGestureHandlerStateChangeEvent) => {
+      const state = event.nativeEvent.state;
+      if (state === State.BEGAN || state === State.ACTIVE) {
+        setIsScrolling(true);
+        scrollAccumulator.current = 0;
+      } else if (
+        state === State.END ||
+        state === State.CANCELLED ||
+        state === State.FAILED
+      ) {
+        setIsScrolling(false);
+        scrollAccumulator.current = 0;
+      }
+    },
+    [],
+  );
+
 
   const handleSingleTap = useCallback(
     (event: TapGestureHandlerStateChangeEvent) => {
@@ -217,37 +264,24 @@ export function Trackpad() {
           <Text style={styles.mouseButtonSubText}>(Primary)</Text>
         </Pressable>
 
-        {/* Scroll & Middle Click Center Pad */}
-        <View style={styles.scrollCenterPad}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.scrollButton,
-              pressed && styles.mouseButtonPressed,
-            ]}
-            onPress={() => sendMouse(0, 0, 0, 1)}>
-            <Text style={styles.scrollArrowText}>▲</Text>
-          </Pressable>
-
+        {/* Continuous Touch Drag Scroll Roller */}
+        <PanGestureHandler
+          ref={scrollRollerRef}
+          onGestureEvent={handleScrollPan}
+          onHandlerStateChange={handleScrollPanState}>
           <Pressable
             testID="trackpad-middle-click"
-            style={({ pressed }) => [
-              styles.middleClickButton,
-              pressed && styles.mouseButtonPressed,
+            style={[
+              styles.scrollRollerPad,
+              isScrolling && styles.scrollRollerPadActive,
             ]}
-            onPressIn={() => sendMouse(4, 0, 0, 0)}
-            onPressOut={() => sendMouse(0, 0, 0, 0)}>
-            <Text style={styles.middleClickText}>SCROLL</Text>
+            onPress={triggerMiddleClick}>
+            <Text style={styles.scrollRollerArrow}>▲</Text>
+            <Text style={styles.scrollRollerText}>DRAG SCROLL</Text>
+            <Text style={styles.scrollRollerSubText}>(Middle Click)</Text>
+            <Text style={styles.scrollRollerArrow}>▼</Text>
           </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [
-              styles.scrollButton,
-              pressed && styles.mouseButtonPressed,
-            ]}
-            onPress={() => sendMouse(0, 0, 0, -1)}>
-            <Text style={styles.scrollArrowText}>▼</Text>
-          </Pressable>
-        </View>
+        </PanGestureHandler>
 
         <Pressable
           testID="trackpad-right-click"

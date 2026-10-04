@@ -73,6 +73,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.colors.bgDark,
   },
+  compactTab: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: THEME.colors.bgSurface,
+  },
+  compactTabActive: {
+    backgroundColor: THEME.colors.accentBlue,
+  },
   // Floating Nav Pill
   floatingNavWrapper: {
     paddingHorizontal: 20,

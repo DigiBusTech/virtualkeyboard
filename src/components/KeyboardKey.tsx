@@ -142,12 +142,17 @@ export function KeyboardKey({
         <Text
           style={[
             styles.keyText,
-            { color: textColor },
+            {
+              color: textColor,
+              fontSize: keyDef.isArrow ? 18 : displayLabel.length > 3 ? 10 : 15,
+            },
             keyDef.isSpecial && styles.keyTextSpecial,
             keyDef.isArrow && styles.arrowKeyText,
             (isModActive || isPressed) && styles.keyTextActive,
           ]}
-          numberOfLines={1}>
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.7}>
           {displayLabel}
         </Text>
       </Animated.View>

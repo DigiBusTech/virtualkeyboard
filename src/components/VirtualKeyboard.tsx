@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import React, { useCallback, useState } from 'react';
 import {
+  Modal,
   Text,
   TouchableOpacity,
   useWindowDimensions,
@@ -33,7 +34,6 @@ export function VirtualKeyboard() {
 
   const { width, height } = useWindowDimensions();
   const isPhysicalLandscape = width > height;
-  const isEffectiveLandscape = isPhysicalLandscape || isForceLandscape;
 
   const isShift = (modifier & MODIFIER_MASK.LEFT_SHIFT) !== 0;
   const isCtrl = (modifier & MODIFIER_MASK.LEFT_CTRL) !== 0;
@@ -113,34 +113,19 @@ export function VirtualKeyboard() {
       ? NUMPAD_LAYOUT
       : QWERTY_LAYOUT;
 
-  const effectiveHeight = isForceLandscape && !isPhysicalLandscape ? width : height;
-  const keyHeight = isEffectiveLandscape
-    ? Math.max(34, Math.min(46, (effectiveHeight - 90) / (activeLayout.length || 5)))
-    : undefined;
-
-  const overlayStyle =
-    isForceLandscape && !isPhysicalLandscape
-      ? {
-          width: height,
-          height: width,
-          transform: [{ rotate: '90deg' }],
-          position: 'absolute' as const,
-          top: (height - width) / 2,
-          left: (width - height) / 2,
-          zIndex: 1000,
-        }
-      : undefined;
+  const keyHeight = isPhysicalLandscape
+    ? Math.max(32, Math.min(42, (height - 90) / (activeLayout.length || 5)))
+    : 44;
 
 
-  return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.bgDark },
-        overlayStyle,
-      ]}>
+  const renderKeyboardContent = (isLandscapeView: boolean) => (
+    <>
       {/* Top Header with Status, Mode Selector & Rotate Toggle */}
-      <View style={[styles.headerBar, { backgroundColor: theme.bgCard, borderColor: theme.borderSubtle }]}>
+      <View
+        style={[
+          styles.headerBar,
+          { backgroundColor: theme.bgCard, borderColor: theme.borderSubtle },
+        ]}>
         <View style={styles.headerLeft}>
           <Text
             style={
@@ -157,13 +142,19 @@ export function VirtualKeyboard() {
             onPress={() => setMode('qwerty')}
             activeOpacity={0.7}>
             <Text
-              style={[styles.modeText, mode === 'qwerty' && styles.modeTextActive]}>
+              style={[
+                styles.modeText,
+                mode === 'qwerty' && styles.modeTextActive,
+              ]}>
               QWERTY
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.modePill, mode === 'functions' && styles.modePillActive]}
+            style={[
+              styles.modePill,
+              mode === 'functions' && styles.modePillActive,
+            ]}
             onPress={() => setMode('functions')}
             activeOpacity={0.7}>
             <Text
@@ -180,7 +171,10 @@ export function VirtualKeyboard() {
             onPress={() => setMode('numpad')}
             activeOpacity={0.7}>
             <Text
-              style={[styles.modeText, mode === 'numpad' && styles.modeTextActive]}>
+              style={[
+                styles.modeText,
+                mode === 'numpad' && styles.modeTextActive,
+              ]}>
               Numpad
             </Text>
           </TouchableOpacity>
@@ -188,11 +182,21 @@ export function VirtualKeyboard() {
 
         {/* Dedicated Keyboard-Only Rotate Toggle */}
         <TouchableOpacity
-          style={[styles.rotateButton, { backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }]}
+          style={[
+            styles.rotateButton,
+            {
+              backgroundColor: isLandscapeView ? theme.accentBlue : theme.bgSurface,
+              borderColor: isLandscapeView ? theme.accentBlue : theme.borderSubtle,
+            },
+          ]}
           onPress={() => setIsForceLandscape(prev => !prev)}
           activeOpacity={0.7}>
-          <Text style={[styles.rotateButtonText, { color: theme.accentBlue }]}>
-            {isEffectiveLandscape ? '📱 Portrait' : '🔄 Landscape'}
+          <Text
+            style={[
+              styles.rotateButtonText,
+              { color: isLandscapeView ? '#FFFFFF' : theme.accentBlue },
+            ]}>
+            {isLandscapeView ? '📱 Exit' : '🔄 Landscape'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -220,14 +224,62 @@ export function VirtualKeyboard() {
                 modifier={modifier}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
-                keyHeight={keyHeight}
+                keyHeight={
+                  isLandscapeView
+                    ? Math.min(36, (width - 120) / (activeLayout.length || 5))
+                    : keyHeight
+                }
                 isCapsLockActive={isCapsLock}
               />
             ))}
           </View>
         ))}
       </View>
-    </View>
+    </>
+  );
+
+  return (
+    <>
+      {/* Normal View inside screen flow */}
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: theme.bgDark },
+          isPhysicalLandscape && styles.containerLandscape,
+        ]}>
+        {renderKeyboardContent(isPhysicalLandscape)}
+      </View>
+
+      {/* Fullscreen Rotated Modal when explicitly activated on portrait */}
+      {isForceLandscape && !isPhysicalLandscape && (
+        <Modal
+          visible={true}
+          animationType="fade"
+          transparent={false}
+          onRequestClose={() => setIsForceLandscape(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: theme.bgDark,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                width: height,
+                height: width,
+                transform: [{ rotate: '90deg' }],
+                paddingHorizontal: 28,
+                paddingVertical: 14,
+                justifyContent: 'space-between',
+                backgroundColor: theme.bgDark,
+              }}>
+              {renderKeyboardContent(true)}
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
   );
 }
 

@@ -6,7 +6,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.colors.bgDark,
     paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingTop: 4,
+    paddingBottom: 72,
+    justifyContent: 'flex-end',
+  },
+  containerLandscape: {
+    paddingBottom: 16,
+    paddingHorizontal: 16,
     justifyContent: 'space-between',
   },
   headerBar: {
@@ -122,24 +128,23 @@ export const styles = StyleSheet.create({
     color: THEME.colors.accentCyan,
   },
   keyboardSurface: {
-    flex: 1,
     justifyContent: 'center',
-    gap: 3,
+    gap: 4,
   },
   row: {
     flexDirection: 'row',
     gap: 3,
     justifyContent: 'center',
-    flex: 1,
+    alignItems: 'center',
   },
   keyWrapper: {
     flex: 1,
     margin: 1.5,
   },
   keySurface: {
-    flex: 1,
+    height: 44,
     backgroundColor: THEME.colors.bgKey,
-    borderRadius: 12,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,

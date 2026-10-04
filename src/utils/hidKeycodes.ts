@@ -160,7 +160,7 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: '0', shiftLabel: ')', code: HID_KEY_CODES.NUM_0 },
     { label: '-', shiftLabel: '_', code: HID_KEY_CODES.MINUS },
     { label: '=', shiftLabel: '+', code: HID_KEY_CODES.EQUAL },
-    { label: 'Bksp', code: HID_KEY_CODES.BACKSPACE, width: 1.4, isSpecial: true },
+    { label: '⌫', code: HID_KEY_CODES.BACKSPACE, width: 1.4, isSpecial: true },
   ],
   // QWERTY row
   [

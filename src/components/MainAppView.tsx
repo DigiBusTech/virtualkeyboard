@@ -56,6 +56,44 @@ export function MainAppView() {
         </View>
 
         <View style={styles.headerActions}>
+          {/* Quick tab switcher in landscape header */}
+          {isLandscape && (
+            <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[
+                  styles.compactTab,
+                  activeTab === 'keyboard' && styles.compactTabActive,
+                ]}
+                onPress={() => setActiveTab('keyboard')}>
+                <Text style={{ fontSize: 13 }}>{'\u2328'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.compactTab,
+                  activeTab === 'trackpad' && styles.compactTabActive,
+                ]}
+                onPress={() => setActiveTab('trackpad')}>
+                <Text style={{ fontSize: 13 }}>{'\uD83D\uDDB1'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.compactTab,
+                  activeTab === 'pairing' && styles.compactTabActive,
+                ]}
+                onPress={() => setActiveTab('pairing')}>
+                <Text style={{ fontSize: 13 }}>{'\uD83D\uDCE1'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.compactTab,
+                  activeTab === 'bluetooth' && styles.compactTabActive,
+                ]}
+                onPress={() => setActiveTab('bluetooth')}>
+                <Text style={{ fontSize: 13 }}>{'\u2699'}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* Light / Dark Mode Global Toggle */}
           <TouchableOpacity
             testID="theme-toggle"
@@ -96,119 +134,120 @@ export function MainAppView() {
         {activeTab === 'bluetooth' && <PermissionsDashboard />}
       </View>
 
-      {/* Modern Floating Bottom Nav Pill with Icons */}
-      <View
-        style={[
-          styles.floatingNavWrapper,
-          { backgroundColor: theme.bgDark },
-          isLandscape && styles.floatingNavWrapperLandscape,
-        ]}>
+      {/* Modern Floating Bottom Nav Pill with Icons (Portrait only) */}
+      {!isLandscape && (
         <View
           style={[
-            styles.floatingNavPill,
-            { backgroundColor: theme.bgCard, borderColor: theme.borderSubtle },
+            styles.floatingNavWrapper,
+            { backgroundColor: theme.bgDark },
           ]}>
-          <TouchableOpacity
-            testID="tab-keyboard"
+          <View
             style={[
-              styles.tabButton,
-              activeTab === 'keyboard' && [
-                styles.tabButtonActive,
-                { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
-              ],
-            ]}
-            onPress={() => setActiveTab('keyboard')}
-            activeOpacity={0.7}>
-            <Text style={styles.tabIcon}>{'\u2328'}</Text>
-            <Text
+              styles.floatingNavPill,
+              { backgroundColor: theme.bgCard, borderColor: theme.borderSubtle },
+            ]}>
+            <TouchableOpacity
+              testID="tab-keyboard"
               style={[
-                styles.tabLabel,
-                { color: theme.textMuted },
+                styles.tabButton,
                 activeTab === 'keyboard' && [
-                  styles.tabLabelActive,
-                  { color: theme.accentBlue },
+                  styles.tabButtonActive,
+                  { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
                 ],
-              ]}>
-              Keyboard
-            </Text>
-          </TouchableOpacity>
+              ]}
+              onPress={() => setActiveTab('keyboard')}
+              activeOpacity={0.7}>
+              <Text style={styles.tabIcon}>{'\u2328'}</Text>
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: theme.textMuted },
+                  activeTab === 'keyboard' && [
+                    styles.tabLabelActive,
+                    { color: theme.accentBlue },
+                  ],
+                ]}>
+                Keyboard
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            testID="tab-trackpad"
-            style={[
-              styles.tabButton,
-              activeTab === 'trackpad' && [
-                styles.tabButtonActive,
-                { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
-              ],
-            ]}
-            onPress={() => setActiveTab('trackpad')}
-            activeOpacity={0.7}>
-            <Text style={styles.tabIcon}>{'\uD83D\uDDB1'}</Text>
-            <Text
+            <TouchableOpacity
+              testID="tab-trackpad"
               style={[
-                styles.tabLabel,
-                { color: theme.textMuted },
+                styles.tabButton,
                 activeTab === 'trackpad' && [
-                  styles.tabLabelActive,
-                  { color: theme.accentBlue },
+                  styles.tabButtonActive,
+                  { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
                 ],
-              ]}>
-              Trackpad
-            </Text>
-          </TouchableOpacity>
+              ]}
+              onPress={() => setActiveTab('trackpad')}
+              activeOpacity={0.7}>
+              <Text style={styles.tabIcon}>{'\uD83D\uDDB1'}</Text>
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: theme.textMuted },
+                  activeTab === 'trackpad' && [
+                    styles.tabLabelActive,
+                    { color: theme.accentBlue },
+                  ],
+                ]}>
+                Trackpad
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            testID="tab-pairing"
-            style={[
-              styles.tabButton,
-              activeTab === 'pairing' && [
-                styles.tabButtonActive,
-                { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
-              ],
-            ]}
-            onPress={() => setActiveTab('pairing')}
-            activeOpacity={0.7}>
-            <Text style={styles.tabIcon}>{'\uD83D\uDCE1'}</Text>
-            <Text
+            <TouchableOpacity
+              testID="tab-pairing"
               style={[
-                styles.tabLabel,
-                { color: theme.textMuted },
+                styles.tabButton,
                 activeTab === 'pairing' && [
-                  styles.tabLabelActive,
-                  { color: theme.accentBlue },
+                  styles.tabButtonActive,
+                  { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
                 ],
-              ]}>
-              Pairing
-            </Text>
-          </TouchableOpacity>
+              ]}
+              onPress={() => setActiveTab('pairing')}
+              activeOpacity={0.7}>
+              <Text style={styles.tabIcon}>{'\uD83D\uDCE1'}</Text>
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: theme.textMuted },
+                  activeTab === 'pairing' && [
+                    styles.tabLabelActive,
+                    { color: theme.accentBlue },
+                  ],
+                ]}>
+                Pairing
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            testID="tab-bluetooth"
-            style={[
-              styles.tabButton,
-              activeTab === 'bluetooth' && [
-                styles.tabButtonActive,
-                { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
-              ],
-            ]}
-            onPress={() => setActiveTab('bluetooth')}
-            activeOpacity={0.7}>
-            <Text style={styles.tabIcon}>{'\u2699'}</Text>
-            <Text
+            <TouchableOpacity
+              testID="tab-bluetooth"
               style={[
-                styles.tabLabel,
-                { color: theme.textMuted },
+                styles.tabButton,
                 activeTab === 'bluetooth' && [
-                  styles.tabLabelActive,
-                  { color: theme.accentBlue },
+                  styles.tabButtonActive,
+                  { backgroundColor: theme.bgKey, borderColor: theme.borderMedium },
                 ],
-              ]}>
-              Setup
-            </Text>
-          </TouchableOpacity>
+              ]}
+              onPress={() => setActiveTab('bluetooth')}
+              activeOpacity={0.7}>
+              <Text style={styles.tabIcon}>{'\u2699'}</Text>
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: theme.textMuted },
+                  activeTab === 'bluetooth' && [
+                    styles.tabLabelActive,
+                    { color: theme.accentBlue },
+                  ],
+                ]}>
+                Setup
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Credits / Info Modal */}
       <CreditsModal
