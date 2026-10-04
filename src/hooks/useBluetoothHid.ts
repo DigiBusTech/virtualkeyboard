@@ -71,6 +71,12 @@ export function useBluetoothHid(): UseBluetoothHidReturn {
   useEffect(() => {
     refreshState();
 
+    if (isSupported && typeof BluetoothHid.registerApp === 'function') {
+      BluetoothHid.registerApp()
+        .then(() => refreshState())
+        .catch(() => {});
+    }
+
     const regSub = BluetoothHidEvents.addRegistrationListener(event => {
       setIsRegistered(event.registered);
     });
@@ -146,20 +152,26 @@ export function useBluetoothHid(): UseBluetoothHidReturn {
     }
   }, []);
 
-  const connect = useCallback(async (address: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await BluetoothHid.connect(address);
-      return res;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Connection failed';
-      setError(msg);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const connect = useCallback(
+    async (address: string): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
+      try {
+        if (!isRegistered && typeof BluetoothHid.registerApp === 'function') {
+          await BluetoothHid.registerApp().catch(() => {});
+        }
+        const res = await BluetoothHid.connect(address);
+        return res;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Connection failed';
+        setError(msg);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [isRegistered],
+  );
 
   const disconnect = useCallback(async (): Promise<boolean> => {
     setLoading(true);

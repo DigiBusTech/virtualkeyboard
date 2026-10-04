@@ -123,7 +123,17 @@ npm test
 
 ---
 
+## 🏢 Developed & Maintained by DigiBusTech
+
+This software is developed and powered by **[DigiBusTech](https://digibustech.com/)** — leaders in smart connectivity, IoT solutions, and embedded mobile innovations.
+
+- **Website**: [https://digibustech.com/](https://digibustech.com/)
+- **Repository**: [https://github.com/DigiBusTech/virtualkeyboard](https://github.com/DigiBusTech/virtualkeyboard)
+
+---
+
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 
 

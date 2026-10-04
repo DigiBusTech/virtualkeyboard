@@ -1,18 +1,34 @@
 /* eslint-disable no-bitwise */
 import React, { useCallback, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useBluetoothHid } from '../hooks/useBluetoothHid';
 import {
+  FUNCTION_MEDIA_LAYOUT,
   KeyDefinition,
-  KEYBOARD_LAYOUT,
   MODIFIER_MASK,
+  NUMPAD_LAYOUT,
+  QWERTY_LAYOUT,
 } from '../utils/hidKeycodes';
+import { KeyboardKey } from './KeyboardKey';
+import { QuickActionBar } from './QuickActionBar';
 import { styles } from './VirtualKeyboard.styles';
+
+export type KeyboardMode = 'qwerty' | 'functions' | 'numpad';
 
 export function VirtualKeyboard() {
   const { sendKeyboard, connectionState, connectedDevice } = useBluetoothHid();
+  const [mode, setMode] = useState<KeyboardMode>('qwerty');
   const [modifier, setModifier] = useState<number>(MODIFIER_MASK.NONE);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [isRotated, setIsRotated] = useState<boolean>(false);
+
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   const isShift = (modifier & MODIFIER_MASK.LEFT_SHIFT) !== 0;
   const isCtrl = (modifier & MODIFIER_MASK.LEFT_CTRL) !== 0;
@@ -47,79 +63,117 @@ export function VirtualKeyboard() {
   const handlePressOut = useCallback(
     (key: KeyDefinition) => {
       setActiveKey(null);
-      if (key.isModifier) {
-        return;
-      }
-      // Release key by sending keycode 0x00 with active modifiers
+      if (key.isModifier) return;
       sendKeyboard(modifier, 0);
     },
     [modifier, sendKeyboard],
   );
 
+  const sendCombo = useCallback(
+    (modBit: number, code: number) => {
+      sendKeyboard(modBit, code);
+      setTimeout(() => {
+        sendKeyboard(MODIFIER_MASK.NONE, 0);
+      }, 50);
+    },
+    [sendKeyboard],
+  );
+
   const isConnected = connectionState === 'CONNECTED';
 
+  const activeLayout =
+    mode === 'functions'
+      ? FUNCTION_MEDIA_LAYOUT
+      : mode === 'numpad'
+      ? NUMPAD_LAYOUT
+      : QWERTY_LAYOUT;
+
   return (
-    <View style={styles.container}>
-      {/* Keyboard status header */}
-      <View style={styles.statusRow}>
-        <Text style={styles.statusText}>
-          {isConnected
-            ? `⌨️ Connected: ${connectedDevice?.name ?? 'Host PC'}`
-            : '⚠️ Not Connected to Host'}
-        </Text>
-        <Text style={styles.activeKeyPreview}>
-          {activeKey
-            ? `Key: ${activeKey}`
-            : activeModifiers
-            ? `Active: ${activeModifiers}`
-            : ''}
-        </Text>
+    <View style={[styles.container, isRotated && !isLandscape && styles.rotatedContainer]}>
+      {/* Top Header with Status, Modes & Rotate Toggle */}
+      <View style={styles.headerBar}>
+        <View style={styles.headerLeft}>
+          <Text
+            style={
+              isConnected ? styles.hostBadge : styles.hostBadgeDisconnected
+            }>
+            {isConnected ? `● ${connectedDevice?.name ?? 'Host PC'}` : '○ Offline'}
+          </Text>
+        </View>
+
+        {/* Mode Selector */}
+        <View style={styles.modeSelector}>
+          <TouchableOpacity
+            style={[styles.modePill, mode === 'qwerty' && styles.modePillActive]}
+            onPress={() => setMode('qwerty')}>
+            <Text
+              style={[styles.modeText, mode === 'qwerty' && styles.modeTextActive]}>
+              QWERTY
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modePill, mode === 'functions' && styles.modePillActive]}
+            onPress={() => setMode('functions')}>
+            <Text
+              style={[
+                styles.modeText,
+                mode === 'functions' && styles.modeTextActive,
+              ]}>
+              F-Keys
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modePill, mode === 'numpad' && styles.modePillActive]}
+            onPress={() => setMode('numpad')}>
+            <Text
+              style={[styles.modeText, mode === 'numpad' && styles.modeTextActive]}>
+              Numpad
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* In-app Rotation Toggle */}
+        <TouchableOpacity
+          style={styles.rotateButton}
+          onPress={() => setIsRotated(prev => !prev)}
+          activeOpacity={0.7}>
+          <Text style={styles.rotateButtonText}>
+            {isRotated ? '📱 Normal' : '🔄 Rotate'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Rows */}
-      <View style={styles.keyboardGrid}>
-        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+      {/* Quick Action Shortcuts Strip */}
+      <QuickActionBar onSendCombo={sendCombo} />
+
+      {/* Key Display Toast */}
+      {activeKey && (
+        <View style={styles.activeKeyToast}>
+          <Text style={styles.activeKeyToastText}>
+            {activeKey} {activeModifiers ? `(${activeModifiers})` : ''}
+          </Text>
+        </View>
+      )}
+
+      {/* Main Keys Matrix */}
+      <View style={styles.keyboardSurface}>
+        {activeLayout.map((row, rowIndex) => (
           <View key={`row-${rowIndex}`} style={styles.row}>
-            {row.map(key => {
-              const isMod = key.isModifier;
-              const isModActive =
-                isMod && key.modifierBit && (modifier & key.modifierBit) !== 0;
-
-              const displayLabel =
-                isShift && key.shiftLabel
-                  ? key.shiftLabel
-                  : isShift && key.label.length === 1
-                  ? key.label.toUpperCase()
-                  : key.label;
-
-              return (
-                <Pressable
-                  testID={`keyboard-key-${key.label}`}
-                  key={`key-${key.label}-${key.code}`}
-                  style={({ pressed }) => [
-                    styles.key,
-                    key.width ? { flex: key.width } : undefined,
-                    pressed && styles.keyPressed,
-                    isModActive ? styles.modifierActive : undefined,
-                  ]}
-                  onPressIn={() => handlePressIn(key)}
-                  onPressOut={() => handlePressOut(key)}>
-                  {key.shiftLabel && !isShift && (
-                    <Text style={styles.shiftSubText}>{key.shiftLabel}</Text>
-                  )}
-                  <Text
-                    style={[
-                      styles.keyText,
-                      isModActive ? styles.keyTextActive : undefined,
-                    ]}>
-                    {displayLabel}
-                  </Text>
-                </Pressable>
-              );
-            })}
+            {row.map(key => (
+              <KeyboardKey
+                key={`key-${key.label}-${key.code}`}
+                keyDef={key}
+                modifier={modifier}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+              />
+            ))}
           </View>
         ))}
       </View>
     </View>
   );
 }
+

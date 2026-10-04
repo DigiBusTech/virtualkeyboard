@@ -8,6 +8,8 @@ jest.mock('../src/native/BluetoothHidModule', () => {
   return {
     __esModule: true,
     default: {
+      registerApp: jest.fn().mockResolvedValue(true),
+      unregisterApp: jest.fn().mockResolvedValue(true),
       startDiscovery: jest.fn().mockResolvedValue(true),
       cancelDiscovery: jest.fn().mockResolvedValue(true),
       makeDiscoverable: jest.fn().mockResolvedValue(true),

@@ -1,41 +1,73 @@
 import React, { useState } from 'react';
-import { StatusBar, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
+import {
+  Linking,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Trackpad } from './Trackpad';
-import { VirtualKeyboard } from './VirtualKeyboard';
+import { THEME } from '../theme/theme';
+import { CreditsModal } from './CreditsModal';
+import { styles } from './MainAppView.styles';
 import { PairingScreen } from './PairingScreen';
 import { PermissionsDashboard } from './PermissionsDashboard';
-import { styles } from './MainAppView.styles';
+import { Trackpad } from './Trackpad';
+import { VirtualKeyboard } from './VirtualKeyboard';
 
 export type ActiveTab = 'trackpad' | 'keyboard' | 'pairing' | 'bluetooth';
 
 export function MainAppView() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('trackpad');
+  const [showCredits, setShowCredits] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
+
+  const handleOpenBrand = () => {
+    Linking.openURL(THEME.branding.website).catch(() => {});
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-      {/* Tab Switcher Bar */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          testID="tab-trackpad"
-          style={[
-            styles.tabButton,
-            activeTab === 'trackpad' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('trackpad')}>
-          <Text style={styles.tabIcon}>🖱️</Text>
-          <Text
-            style={[
-              styles.tabLabel,
-              activeTab === 'trackpad' && styles.tabLabelActive,
-            ]}>
-            Trackpad
-          </Text>
-        </TouchableOpacity>
+      {/* Top Header Bar with DigiBusTech Branding */}
+      <View style={styles.headerBar}>
+        <View style={styles.headerBranding}>
+          <Text style={styles.logoIcon}>⌨️</Text>
+          <Text style={styles.appName}>{THEME.branding.name}</Text>
+          <TouchableOpacity
+            style={styles.companyBadge}
+            onPress={handleOpenBrand}
+            activeOpacity={0.8}>
+            <Text style={styles.companyBadgeText}>by {THEME.branding.company}</Text>
+          </TouchableOpacity>
+        </View>
 
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.infoButton}
+            onPress={() => setShowCredits(true)}
+            activeOpacity={0.7}>
+            <Text style={styles.infoButtonText}>ℹ️ Info</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Active Tab Screen */}
+      <View style={styles.contentArea}>
+        {activeTab === 'trackpad' && <Trackpad />}
+        {activeTab === 'keyboard' && (
+          <View style={styles.keyboardContainer}>
+            <VirtualKeyboard />
+          </View>
+        )}
+        {activeTab === 'pairing' && <PairingScreen />}
+        {activeTab === 'bluetooth' && <PermissionsDashboard />}
+      </View>
+
+      {/* Modern Tab Bar */}
+      <View style={styles.tabBar}>
         <TouchableOpacity
           testID="tab-keyboard"
           style={[
@@ -54,13 +86,30 @@ export function MainAppView() {
         </TouchableOpacity>
 
         <TouchableOpacity
+          testID="tab-trackpad"
+          style={[
+            styles.tabButton,
+            activeTab === 'trackpad' && styles.tabButtonActive,
+          ]}
+          onPress={() => setActiveTab('trackpad')}>
+          <Text style={styles.tabIcon}>🖱️</Text>
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === 'trackpad' && styles.tabLabelActive,
+            ]}>
+            Trackpad
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           testID="tab-pairing"
           style={[
             styles.tabButton,
             activeTab === 'pairing' && styles.tabButtonActive,
           ]}
           onPress={() => setActiveTab('pairing')}>
-          <Text style={styles.tabIcon}>🔍</Text>
+          <Text style={styles.tabIcon}>📡</Text>
           <Text
             style={[
               styles.tabLabel,
@@ -77,7 +126,7 @@ export function MainAppView() {
             activeTab === 'bluetooth' && styles.tabButtonActive,
           ]}
           onPress={() => setActiveTab('bluetooth')}>
-          <Text style={styles.tabIcon}>📶</Text>
+          <Text style={styles.tabIcon}>⚙️</Text>
           <Text
             style={[
               styles.tabLabel,
@@ -88,18 +137,13 @@ export function MainAppView() {
         </TouchableOpacity>
       </View>
 
-      {/* Active Tab Screen */}
-      <View style={styles.contentArea}>
-        {activeTab === 'trackpad' && <Trackpad />}
-        {activeTab === 'keyboard' && (
-          <View style={styles.keyboardContainer}>
-            <VirtualKeyboard />
-          </View>
-        )}
-        {activeTab === 'pairing' && <PairingScreen />}
-        {activeTab === 'bluetooth' && <PermissionsDashboard />}
-      </View>
+      {/* Credits / Info Modal */}
+      <CreditsModal
+        visible={showCredits}
+        onClose={() => setShowCredits(false)}
+      />
     </SafeAreaView>
   );
 }
+
 

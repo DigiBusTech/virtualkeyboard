@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { THEME } from '../theme/theme';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: THEME.colors.bgDark,
   },
   headerBar: {
     flexDirection: 'row',
@@ -11,17 +12,17 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#1E293B',
+    backgroundColor: THEME.colors.bgCard,
     borderBottomWidth: 1,
-    borderBottomColor: '#334155',
+    borderBottomColor: THEME.colors.borderSubtle,
   },
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#94A3B8',
+    color: THEME.colors.textMuted,
   },
   statusConnected: {
-    color: '#34D399',
+    color: THEME.colors.accentEmerald,
     fontWeight: '700',
   },
   sensitivityContainer: {
@@ -31,22 +32,25 @@ export const styles = StyleSheet.create({
   },
   sensitivityLabel: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: THEME.colors.textMuted,
     fontWeight: '600',
   },
   sensitivityPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    backgroundColor: '#334155',
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: THEME.colors.bgSurface,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
   },
   sensitivityPillActive: {
-    backgroundColor: '#2563EB',
+    backgroundColor: THEME.colors.accentBlue,
+    borderColor: THEME.colors.accentCyan,
   },
   sensitivityText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
-    color: '#94A3B8',
+    color: THEME.colors.textSecondary,
   },
   sensitivityTextActive: {
     color: '#FFFFFF',
@@ -54,7 +58,12 @@ export const styles = StyleSheet.create({
   trackpadArea: {
     flex: 1,
     position: 'relative',
-    backgroundColor: '#0B1120',
+    backgroundColor: THEME.colors.bgDark,
+    margin: 12,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: THEME.colors.borderSubtle,
+    overflow: 'hidden',
   },
   trackpadSurface: {
     flex: 1,
@@ -62,8 +71,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   trackpadHint: {
-    fontSize: 14,
-    color: '#334155',
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.2)',
     fontWeight: '600',
     textAlign: 'center',
     lineHeight: 22,
@@ -73,48 +82,54 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    width: 32,
-    backgroundColor: 'rgba(30, 41, 59, 0.4)',
+    width: 36,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
     borderLeftWidth: 1,
-    borderLeftColor: '#1E293B',
+    borderLeftColor: THEME.colors.borderSubtle,
     justifyContent: 'center',
     alignItems: 'center',
   },
   scrollStripText: {
     fontSize: 10,
-    fontWeight: '700',
-    color: '#64748B',
+    fontWeight: '800',
+    color: THEME.colors.accentCyan,
     letterSpacing: 2,
     transform: [{ rotate: '90deg' }],
   },
   mouseButtonsRow: {
     flexDirection: 'row',
-    height: 70,
-    borderTopWidth: 1,
-    borderTopColor: '#334155',
-    backgroundColor: '#1E293B',
+    height: 72,
+    marginHorizontal: 12,
+    marginBottom: 8,
+    gap: 8,
   },
   mouseButton: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: THEME.colors.bgCardElevated,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
+    elevation: 4,
   },
   mouseButtonPressed: {
-    backgroundColor: '#2563EB',
+    backgroundColor: THEME.colors.accentBlue,
+    borderColor: THEME.colors.accentCyan,
+    transform: [{ scale: 0.98 }],
   },
   mouseButtonDivider: {
-    width: 1,
-    backgroundColor: '#334155',
+    display: 'none',
   },
   mouseButtonText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#E2E8F0',
+    color: THEME.colors.textPrimary,
   },
   mouseButtonSubText: {
     fontSize: 10,
-    color: '#94A3B8',
+    color: THEME.colors.textMuted,
     marginTop: 2,
   },
 });
+

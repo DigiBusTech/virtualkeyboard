@@ -153,6 +153,9 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
                     val isEnabled = state == BluetoothAdapter.STATE_ON
+                    if (isEnabled) {
+                        initializeHidProxy()
+                    }
                     sendEvent("onBluetoothStateChanged", Arguments.createMap().apply {
                         putBoolean("enabled", isEnabled)
                         putInt("state", state)
@@ -185,6 +188,27 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
 
     init {
         registerBluetoothReceiver()
+        initializeHidProxy()
+    }
+
+    private fun initializeHidProxy() {
+        val adapter = bluetoothAdapter ?: return
+        if (!adapter.isEnabled) return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+
+        try {
+            if (hidDevice == null) {
+                adapter.getProfileProxy(
+                    reactApplicationContext,
+                    serviceListener,
+                    BluetoothProfile.HID_DEVICE
+                )
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "SecurityException in initializeHidProxy", e)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in initializeHidProxy", e)
+        }
     }
 
     private fun registerBluetoothReceiver() {
@@ -319,10 +343,16 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun connectToDevice(deviceAddress: String, promise: Promise) {
-        val hid = hidDevice
         val adapter = bluetoothAdapter
-        if (hid == null || adapter == null) {
-            promise.reject("NOT_INITIALIZED", "Bluetooth HID service is not initialized. Call registerApp first.")
+        if (adapter == null) {
+            promise.reject("NO_ADAPTER", "Bluetooth adapter is not available.")
+            return
+        }
+
+        var hid = hidDevice
+        if (hid == null) {
+            initializeHidProxy()
+            promise.reject("INITIALIZING", "Initializing Bluetooth HID service. Please tap Connect again in 2 seconds.")
             return
         }
 
@@ -331,6 +361,9 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
             if (device == null) {
                 promise.reject("DEVICE_NOT_FOUND", "Device with address $deviceAddress not found.")
                 return
+            }
+            if (device.bondState != BluetoothDevice.BOND_BONDED) {
+                device.createBond()
             }
             val result = hid.connect(device)
             promise.resolve(result)

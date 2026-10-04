@@ -1,34 +1,106 @@
 import { StyleSheet } from 'react-native';
+import { THEME } from '../theme/theme';
 
 export const styles = StyleSheet.create({
   container: {
-    padding: 6,
-    backgroundColor: '#0F172A',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#334155',
+    flex: 1,
+    backgroundColor: THEME.colors.bgDark,
+    justifyContent: 'space-between',
+    padding: 8,
   },
-  statusRow: {
+  rotatedContainer: {
+    transform: [{ rotate: '90deg' }],
+  },
+  headerBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#334155',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: THEME.colors.bgCard,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
     marginBottom: 6,
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#94A3B8',
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
-  activeKeyPreview: {
+  hostBadge: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#38BDF8',
+    color: THEME.colors.accentEmerald,
   },
-  keyboardGrid: {
+  hostBadgeDisconnected: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: THEME.colors.accentAmber,
+  },
+  modeSelector: {
+    flexDirection: 'row',
+    backgroundColor: THEME.colors.bgInput,
+    borderRadius: 8,
+    padding: 3,
+    gap: 4,
+  },
+  modePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  modePillActive: {
+    backgroundColor: THEME.colors.accentBlue,
+  },
+  modeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: THEME.colors.textMuted,
+  },
+  modeTextActive: {
+    color: '#FFFFFF',
+  },
+  rotateButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 6,
+    backgroundColor: THEME.colors.bgSurface,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  rotateButtonText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: THEME.colors.accentCyan,
+  },
+  quickActionBar: {
+    flexDirection: 'row',
+    paddingVertical: 4,
+    gap: 5,
+    marginBottom: 6,
+  },
+  quickActionKey: {
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    backgroundColor: THEME.colors.bgCardElevated,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickActionText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: THEME.colors.accentCyan,
+  },
+  keyboardSurface: {
+    flex: 1,
+    justifyContent: 'center',
     gap: 5,
   },
   row: {
@@ -37,46 +109,79 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   key: {
-    height: 44,
+    height: 48,
     flex: 1,
-    backgroundColor: '#1E293B',
-    borderRadius: 7,
+    backgroundColor: THEME.colors.bgCardElevated,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155',
-    elevation: 2,
+    borderColor: THEME.colors.borderSubtle,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  specialKey: {
+    backgroundColor: THEME.colors.bgSurface,
+    borderColor: 'rgba(56, 189, 248, 0.2)',
   },
   keyPressed: {
-    backgroundColor: '#2563EB',
-    borderColor: '#60A5FA',
-    transform: [{ scale: 0.96 }],
+    backgroundColor: THEME.colors.accentBlue,
+    borderColor: THEME.colors.accentCyan,
+    transform: [{ scale: 0.94 }],
   },
-  modifierActive: {
-    backgroundColor: '#1D4ED8',
-    borderColor: '#93C5FD',
+  modShiftActive: {
+    backgroundColor: '#1E3A8A',
+    borderColor: THEME.colors.accentCyan,
+    shadowColor: THEME.colors.accentCyan,
+    shadowOpacity: 0.8,
+  },
+  modCtrlActive: {
+    backgroundColor: '#312E81',
+    borderColor: THEME.colors.accentIndigo,
+  },
+  modAltActive: {
+    backgroundColor: '#581C87',
+    borderColor: THEME.colors.accentPurple,
+  },
+  modGuiActive: {
+    backgroundColor: '#78350F',
+    borderColor: THEME.colors.accentAmber,
   },
   keyText: {
-    color: '#F8FAFC',
+    color: THEME.colors.textPrimary,
     fontSize: 13,
     fontWeight: '600',
   },
-  keyTextActive: {
-    color: '#FFFFFF',
+  keyTextSpecial: {
+    color: THEME.colors.accentCyan,
+    fontSize: 12,
     fontWeight: '700',
   },
   shiftSubText: {
     fontSize: 9,
-    color: '#64748B',
+    color: THEME.colors.textMuted,
     position: 'absolute',
     top: 2,
     right: 4,
   },
-  spaceKey: {
-    flex: 4.5,
+  activeKeyToast: {
+    position: 'absolute',
+    top: 60,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: THEME.colors.accentCyan,
+  },
+  activeKeyToastText: {
+    color: THEME.colors.accentCyan,
+    fontWeight: '800',
+    fontSize: 13,
   },
 });
+
