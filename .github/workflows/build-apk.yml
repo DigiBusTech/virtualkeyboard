@@ -7,6 +7,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Standalone Release APK
@@ -46,4 +49,34 @@ jobs:
           name: VirtualKeyboard-APK
           path: android/app/build/outputs/apk/release/*.apk
           retention-days: 30
+
+      - name: Rename APK for Release
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk VirtualKeyboard.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0
+          name: VirtualKeyboard v1.0.0
+          body: |
+            ## 📱 VirtualKeyboard v1.0.0 - Standalone Android Release
+
+            ### Direct Download:
+            - **[VirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.0.0/VirtualKeyboard.apk)**
+
+            ### Features:
+            - **Serverless Bluetooth HID**: Works as a native mouse & keyboard for any PC or Mac. Zero software needed on host!
+            - **60Hz Gesture Trackpad**: 1-finger left click, 2-finger right click, 2-finger scroll, tactile hardware click buttons.
+            - **Virtual Keyboard**: QWERTY grid with USB HID Usage Table scan codes and latching modifiers (Shift, Ctrl, Alt, Win/Cmd).
+            - **Bluetooth Discovery**: Scan for nearby PCs/Macs or make phone discoverable.
+
+            ### Installation:
+            1. Download `VirtualKeyboard.apk` directly on your Android device.
+            2. Tap the downloaded file to install (allow "Install unknown apps" if prompted).
+            3. Open the app, grant Bluetooth permissions, and pair with your PC/Mac!
+          files: VirtualKeyboard.apk
+
 
