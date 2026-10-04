@@ -53,37 +53,43 @@ jobs:
       - name: Rename APK for Release
         if: github.ref == 'refs/heads/main'
         run: |
-          cp android/app/build/outputs/apk/release/app-release.apk VirtualKeyboard.apk
+          cp android/app/build/outputs/apk/release/app-release.apk DBVKeyboard.apk
           cp android/app/build/outputs/apk/release/app-release.apk DigiVirtualKeyboard.apk
+          cp android/app/build/outputs/apk/release/app-release.apk VirtualKeyboard.apk
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.0.0
-          name: Digi VirtualKeyboard v1.0.0
+          tag_name: v1.1.0
+          name: DBV Keyboard v1.1.0
+          make_latest: true
           body: |
-            ## 📱 Digi VirtualKeyboard v1.0.0 - Standalone Android Release by DigiBusTech
+            ## 📱 DBV Keyboard v1.1.0 - Standalone Android Release by DigiBusTech
 
             ### Direct Mobile Downloads:
-            - **[DigiVirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.0.0/DigiVirtualKeyboard.apk)**
-            - **[VirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.0.0/VirtualKeyboard.apk)**
+            - **[DBVKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.1.0/DBVKeyboard.apk)**
+            - **[DigiVirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.1.0/DigiVirtualKeyboard.apk)**
+            - **[VirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.1.0/VirtualKeyboard.apk)**
 
-            ### Features:
-            - **Soft Matte Tactile UI**: Modern squircle chiclet keys with spring animation physics and soft charcoal depth.
-            - **Serverless Bluetooth HID**: Works as a native mouse & keyboard for any PC or Mac. Zero software needed on host!
-            - **60Hz Gesture Trackpad**: 1-finger left click, 2-finger right click, 2-finger scroll.
-            - **Macro Ribbon & Function Keys**: Slim scrollable touch bar for Copy, Paste, Undo, Desktop, and full F1-F12 + Media controls.
-            - **Landscape & Responsive**: Seamless automatic layout adaptation when rotating phone horizontally.
+            ### Features & Updates in v1.1.0:
+            - **Native Consumer HID Media Controls**: Real working volume up/down, mute, screen brightness, keyboard backlight, mic mute, and media playback controls via USB HID Consumer Page 0x0C.
+            - **Standard Function Keys (F1-F12)**: Pure hardware scan codes for BIOS, games, shortcuts, and IDE dev tools without OS interception.
+            - **DBV Keyboard Rebranding**: Rebranded with official DigiBusTech `</>` code bracket branding, glowing animated splash screen, and vector launcher icons.
+            - **Responsive Header Section**: Sleek tactile icon buttons for dark/light mode toggle and app info, eliminating edge clipping on all mobile screens.
+            - **Full Screen Fitting**: Resolved landscape modal bottom collision with system navigation bar; responsive key heights and clear margins.
+            - **Serverless Bluetooth HID**: Zero host software or companion drivers needed on PC, Mac, Linux, or smart TVs.
+            - **60Hz Gesture Trackpad**: 1-finger left click, 2-finger right click, continuous drag scroll roller, and middle click.
             - **Auto-Registration**: Bluetooth HID profile auto-initializes on startup without manual setup.
 
             ### Installation:
-            1. Download `DigiVirtualKeyboard.apk` directly on your Android device.
-            2. Tap the downloaded file to install (allow "Install unknown apps" if prompted).
+            1. Download `DBVKeyboard.apk` directly on your Android phone.
+            2. Tap the downloaded APK to install (allow "Install unknown apps" if prompted).
             3. Open the app, grant Bluetooth permissions, and pair with your PC/Mac!
           files: |
-            VirtualKeyboard.apk
+            DBVKeyboard.apk
             DigiVirtualKeyboard.apk
+            VirtualKeyboard.apk
 
 
 

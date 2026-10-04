@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { THEME } from '../theme/theme';
+import { DigiBusLogo } from './DigiBusLogo';
 
 interface CreditsModalProps {
   visible: boolean;
@@ -27,9 +28,9 @@ export function CreditsModal({ visible, onClose }: CreditsModalProps) {
       onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          {/* Header Icon */}
+          {/* Header DigiBus Logo */}
           <View style={styles.logoBadge}>
-            <Text style={styles.logoEmoji}>⌨️</Text>
+            <DigiBusLogo size={32} color={THEME.colors.accentBlue} />
           </View>
 
           <Text style={styles.appTitle}>{THEME.branding.name}</Text>

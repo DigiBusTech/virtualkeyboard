@@ -86,11 +86,12 @@ export const LIGHT_THEME: ThemeColors = {
 };
 
 export const BRANDING = {
-  name: 'Digi VirtualKeyboard',
+  name: 'DBV Keyboard',
+  shortName: 'DBV',
   company: 'DigiBusTech',
   website: 'https://digibustech.com/',
   tagline: 'Smart Bluetooth HID & IoT Innovations',
-  version: '1.0.0',
+  version: '1.1.0',
 } as const;
 
 export const THEME = {

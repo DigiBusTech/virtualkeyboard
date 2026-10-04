@@ -67,16 +67,18 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   rotateButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
     backgroundColor: THEME.colors.bgSurface,
     borderWidth: 1,
     borderColor: THEME.colors.borderSubtle,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rotateButtonText: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
     color: THEME.colors.accentBlue,
   },
   macroRibbonWrapper: {
@@ -247,23 +249,6 @@ export const styles = StyleSheet.create({
     color: THEME.colors.accentBlue,
     fontWeight: '700',
     fontSize: 12,
-  },
-  key: {
-    height: 48,
-    flex: 1,
-    backgroundColor: THEME.colors.bgKey,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: THEME.colors.borderSubtle,
-  },
-  specialKey: {
-    backgroundColor: THEME.colors.bgSurface,
-  },
-  keyPressed: {
-    backgroundColor: THEME.colors.accentBlue,
-    transform: [{ scale: 0.94 }],
   },
 });
 

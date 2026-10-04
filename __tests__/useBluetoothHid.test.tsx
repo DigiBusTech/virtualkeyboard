@@ -28,6 +28,7 @@ jest.mock('../src/native/BluetoothHidModule', () => {
       sendMouseReport: jest.fn().mockResolvedValue(true),
       sendKeyboardReport: jest.fn().mockResolvedValue(true),
       sendKeyboardMultiReport: jest.fn().mockResolvedValue(true),
+      sendConsumerReport: jest.fn().mockResolvedValue(true),
       sendRawReport: jest.fn().mockResolvedValue(true),
       makeDiscoverable: jest.fn().mockResolvedValue(true),
       getBluetoothState: jest.fn().mockResolvedValue({
@@ -140,6 +141,24 @@ describe('useBluetoothHid Hook', () => {
 
     expect(sent).toBe(true);
     expect(BluetoothHid.sendKeyboardReport).toHaveBeenCalledWith(8, 44);
+  });
+
+  it('dispatches consumer reports with usage code', async () => {
+    let hookResult: UseBluetoothHidReturn | null = null;
+    await ReactTestRenderer.act(async () => {
+      renderHookHarness(hook => {
+        hookResult = hook;
+      });
+    });
+
+    let sent = false;
+    await ReactTestRenderer.act(async () => {
+      // Send Mute (0x00E2)
+      sent = await hookResult!.sendConsumer(0x00E2);
+    });
+
+    expect(sent).toBe(true);
+    expect(BluetoothHid.sendConsumerReport).toHaveBeenCalledWith(0x00E2);
   });
 });
 

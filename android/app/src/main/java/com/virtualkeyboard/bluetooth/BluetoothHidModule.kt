@@ -575,6 +575,34 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
+    fun sendConsumerReport(usageCode: Int, promise: Promise) {
+        val dev = connectedDevice
+        val hid = hidDevice
+        if (hid == null) {
+            promise.reject("NOT_INITIALIZED", "HID device proxy is not initialized.")
+            return
+        }
+        if (dev == null) {
+            promise.reject("NOT_CONNECTED", "No host computer is currently connected.")
+            return
+        }
+
+        val report = byteArrayOf(
+            (usageCode and 0xFF).toByte(),
+            ((usageCode ushr 8) and 0xFF).toByte()
+        )
+
+        try {
+            val sent = hid.sendReport(dev, HidConstants.ID_CONSUMER.toInt(), report)
+            promise.resolve(sent)
+        } catch (e: SecurityException) {
+            promise.reject("SECURITY_EXCEPTION", "Permission BLUETOOTH_CONNECT is required: ${e.message}", e)
+        } catch (e: Exception) {
+            promise.reject("SEND_ERROR", e.message, e)
+        }
+    }
+
+    @ReactMethod
     fun sendRawReport(reportId: Int, data: ReadableArray, promise: Promise) {
         val dev = connectedDevice
         val hid = hidDevice

@@ -53,6 +53,19 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  iconActionButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 9,
+    backgroundColor: THEME.colors.bgCard,
+    borderWidth: 1,
+    borderColor: THEME.colors.borderSubtle,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconActionButtonText: {
+    fontSize: 15,
+  },
   infoButton: {
     paddingHorizontal: 10,
     paddingVertical: 4,

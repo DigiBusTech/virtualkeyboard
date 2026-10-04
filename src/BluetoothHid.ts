@@ -77,6 +77,7 @@ export interface BluetoothHidType {
   cancelDiscovery(): Promise<boolean>;
   makeDiscoverable(durationSeconds?: number): Promise<boolean>;
   getBluetoothState(): Promise<BluetoothState>;
+  sendConsumerReport(usageCode: number): Promise<boolean>;
   sendKeyboardMultiReport(
     modifier: number,
     k1: number,
@@ -93,58 +94,29 @@ const NativeModule =
   NativeModules.BluetoothHidModule || NativeModules.BluetoothHidDevice;
 
 const FallbackModule: BluetoothHidType = {
-  async connectToDevice(): Promise<boolean> {
-    return false;
-  },
-  async connect(address: string): Promise<boolean> {
-    return this.connectToDevice(address);
-  },
-  async sendKeyboardReport(): Promise<boolean> {
-    return false;
-  },
-  async sendMouseReport(): Promise<boolean> {
-    return false;
-  },
-  async registerApp(): Promise<boolean> {
-    return false;
-  },
-  async unregisterApp(): Promise<boolean> {
-    return true;
-  },
-  async isRegistered(): Promise<boolean> {
-    return false;
-  },
-  async disconnect(): Promise<boolean> {
-    return true;
-  },
-  async getConnectionState(): Promise<BluetoothConnectionInfo> {
-    return {
-      state: 'DISCONNECTED',
-      isRegistered: false,
-      device: null,
-    };
-  },
-  async getBondedDevices(): Promise<BluetoothDevice[]> {
-    return [];
-  },
-  async startDiscovery(): Promise<boolean> {
-    return false;
-  },
-  async cancelDiscovery(): Promise<boolean> {
-    return true;
-  },
-  async makeDiscoverable(): Promise<boolean> {
-    return false;
-  },
-  async getBluetoothState(): Promise<BluetoothState> {
-    return {
-      enabled: false,
-      isSupported: false,
-    };
-  },
-  async sendKeyboardMultiReport(): Promise<boolean> {
-    return false;
-  },
+  connectToDevice: async (): Promise<boolean> => false,
+  connect: async (address: string): Promise<boolean> => false,
+  sendKeyboardReport: async (): Promise<boolean> => false,
+  sendConsumerReport: async (): Promise<boolean> => false,
+  sendMouseReport: async (): Promise<boolean> => false,
+  registerApp: async (): Promise<boolean> => false,
+  unregisterApp: async (): Promise<boolean> => true,
+  isRegistered: async (): Promise<boolean> => false,
+  disconnect: async (): Promise<boolean> => true,
+  getConnectionState: async (): Promise<BluetoothConnectionInfo> => ({
+    state: 'DISCONNECTED',
+    isRegistered: false,
+    device: null,
+  }),
+  getBondedDevices: async (): Promise<BluetoothDevice[]> => [],
+  startDiscovery: async (): Promise<boolean> => false,
+  cancelDiscovery: async (): Promise<boolean> => true,
+  makeDiscoverable: async (): Promise<boolean> => false,
+  getBluetoothState: async (): Promise<BluetoothState> => ({
+    enabled: false,
+    isSupported: false,
+  }),
+  sendKeyboardMultiReport: async (): Promise<boolean> => false,
 };
 
 export const BluetoothHid: BluetoothHidType =

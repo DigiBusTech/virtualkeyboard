@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { THEME } from '../theme/theme';
+import { DigiBusLogo } from './DigiBusLogo';
 import { styles } from './SplashScreen.styles';
 
 interface SplashScreenProps {
@@ -98,18 +99,18 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
       <Animated.View style={orbStyle}></Animated.View>
 
       <Animated.View style={contentStyle}>
-        {/* Animated Logo Container */}
+        {/* Animated DigiBus Logo Container */}
         <View style={styles.logoWrapper}>
           <Animated.View style={ringStyle}></Animated.View>
           <Animated.View style={badgeStyle}>
-            <Text style={styles.logoEmoji}>{'\u2328\uFE0F'}</Text>
+            <DigiBusLogo size={46} color="#38BDF8" />
           </Animated.View>
         </View>
 
         {/* Title & Tagline */}
         <Text style={styles.appTitle}>{THEME.branding.name}</Text>
         <Text style={styles.appSubtitle}>
-          Serverless Bluetooth Mouse & Keyboard
+          Serverless Bluetooth HID • Mouse & Keyboard
         </Text>
 
         {/* Brand Credit */}

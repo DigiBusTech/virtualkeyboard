@@ -98,9 +98,9 @@ export const styles = StyleSheet.create({
   },
   mouseButtonsRow: {
     flexDirection: 'row',
-    height: 72,
+    height: 62,
     marginHorizontal: 12,
-    marginBottom: 8,
+    marginBottom: 6,
     gap: 8,
   },
   mouseButton: {

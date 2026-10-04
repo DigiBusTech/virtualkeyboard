@@ -1,4 +1,4 @@
-# VirtualKeyboard: Serverless React Native Bluetooth HID Mouse & Keyboard
+# DBV Keyboard: Serverless React Native Bluetooth HID Mouse & Keyboard
 
 [![React Native](https://img.shields.io/badge/React_Native-0.87.1-61DAFB?logo=react&logoColor=black)](https://reactnative.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -6,7 +6,7 @@
 [![Build Status](https://img.shields.io/badge/Build-GitHub_Actions_Automated_APK-2088FF?logo=github-actions&logoColor=white)](https://github.com/DigiBusTech/virtualkeyboard/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A standalone mobile application built with **React Native**, **TypeScript**, and **Kotlin** that transforms your Android device into a standard **Bluetooth Human Interface Device (HID)**. Your phone pairs natively with any PC or Mac as a physical Bluetooth mouse and keyboard, requiring **zero software, companion apps, or drivers on the host computer**.
+**DBV Keyboard** (by DigiBusTech) is a standalone mobile application built with **React Native**, **TypeScript**, and **Kotlin** that transforms your Android device into a standard **Bluetooth Human Interface Device (HID)**. Your phone pairs natively with any PC or Mac as a physical Bluetooth mouse, keyboard, and multimedia remote, requiring **zero software, companion apps, or drivers on the host computer**.
 
 ---
 
@@ -28,6 +28,7 @@ Apple strictly prohibits iOS applications from broadcasting standard Bluetooth H
 |  Host Computer (PC / Mac / Linux)  |
 |  - Recognized as Hardware Mouse    |
 |  - Recognized as Hardware Keyboard |
+|  - Recognized as Consumer Remote   |
 +------------------------------------+
 ```
 
@@ -35,19 +36,30 @@ Apple strictly prohibits iOS applications from broadcasting standard Bluetooth H
 
 ## ✨ Key Features Explained
 
-### 1. Multi-Touch Gesture Trackpad
+### 1. Working Consumer HID Controls (Media & System)
+- **USB HID Consumer Page (0x0C)**: Directly controls host OS audio and hardware functions:
+  - **Volume Increment / Decrement** (`0x00E9`, `0x00EA`)
+  - **Mute Toggle** (`0x00E2`)
+  - **Screen Brightness Up / Down** (`0x006F`, `0x0070`)
+  - **Microphone Mute** (`0x00A9`)
+  - **Keyboard Backlight** (`0x007C`)
+  - **Media Playback**: Play/Pause (`0x00CD`), Next (`0x00B5`), Previous (`0x00B6`)
+  - **Quick Apps**: Calculator (`0x0192`), Files / Explorer (`0x0194`), Web Browser (`0x0196`)
+
+### 2. Standard Function Keys (F1 - F12)
+- Transmits raw USB HID Keyboard usage codes (`0x3A` to `0x45`) without OS interference.
+- Fully compatible with BIOS screens, PC games, browser developer tools (F12), page refresh (F5), and Alt+F4 shortcuts.
+
+### 3. Multi-Touch Gesture Trackpad
 - **60Hz Throttled Motion**: Captures delta movements ($dX$, $dY$) with high responsiveness while buffering packets to prevent Bluetooth link saturation.
 - **1-Finger Tap**: Transmits standard Left Mouse Click (`buttons = 1`, then `0`).
 - **2-Finger Tap**: Transmits standard Right Mouse Click (`buttons = 2`, then `0`).
-- **2-Finger Drag**: Transmits vertical scroll wheel data (`-127` to `+127`).
-- **Tactile Click Buttons**: Dedicated hardware-style Left Click and Right Click touch pads at the bottom of the screen.
-- **Custom Sensitivity**: 1.0x, 1.5x, 2.0x, and 2.5x cursor speed presets.
+- **Continuous Drag Scroll Roller**: Dedicated continuous vertical drag roller for smooth wheel scrolling.
+- **Middle Click**: Dedicated touch action (`buttons = 4`).
 
-### 2. Full Hardware-Free Virtual Keyboard
-- **Independent Scan Codes**: Bypasses the software IME to transmit raw USB HID Usage Table (Page `0x07`) hardware scan codes (`A-Z`, numbers, function keys, arrows).
-- **Press & Release Simulation**: Sends `sendKeyboardReport(modifier, keyCode)` on press down, and `sendKeyboardReport(modifier, 0x00)` on press release.
-- **Latching Modifiers**: Supports simultaneous modifier combinations: Shift (`0x02`), Control (`0x01`), Alt (`0x04`), and Windows / Command (`0x08`).
-- **Dynamic Shift State**: Keys automatically switch between lowercase, uppercase, and alternative symbols (`!`, `@`, `#`, `$`, etc.) when Shift is latched.
+### 4. Responsive Header & Navigation
+- **Responsive Icon Header**: Uses compact tactile icon buttons for theme toggle and app information, completely eliminating header clipping across all mobile screen sizes.
+- **System Navigation Insets**: Landscape mode provides safe bottom clearance preventing any collision with Android system navigation bars and gesture pills.
 
 ### 3. Native Bluetooth Pairing & Discovery UI
 - **Host Discovery**: Scans for nearby discoverable PCs and Macs via `BluetoothAdapter.startDiscovery()`.

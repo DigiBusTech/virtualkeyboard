@@ -29,6 +29,9 @@ describe('BluetoothHid Native Bridge (Phase 2 & 3)', () => {
 
       const kbRes = await BluetoothHid.sendKeyboardReport(0, 4);
       expect(kbRes).toBe(false);
+
+      const consumerRes = await BluetoothHid.sendConsumerReport(0x00E9);
+      expect(consumerRes).toBe(false);
     });
   });
 
@@ -50,6 +53,7 @@ describe('BluetoothHid Native Bridge (Phase 2 & 3)', () => {
       ]),
       sendMouseReport: jest.fn().mockResolvedValue(true),
       sendKeyboardReport: jest.fn().mockResolvedValue(true),
+      sendConsumerReport: jest.fn().mockResolvedValue(true),
       sendRawReport: jest.fn().mockResolvedValue(true),
       startDiscovery: jest.fn().mockResolvedValue(true),
       cancelDiscovery: jest.fn().mockResolvedValue(true),
@@ -75,6 +79,13 @@ describe('BluetoothHid Native Bridge (Phase 2 & 3)', () => {
       const result = await mockNativeHid.sendKeyboardReport(2, 4);
       expect(result).toBe(true);
       expect(mockNativeHid.sendKeyboardReport).toHaveBeenCalledWith(2, 4);
+    });
+
+    it('invokes native sendConsumerReport with usage code', async () => {
+      // Send Volume Up (0x00E9)
+      const result = await mockNativeHid.sendConsumerReport(0x00E9);
+      expect(result).toBe(true);
+      expect(mockNativeHid.sendConsumerReport).toHaveBeenCalledWith(0x00E9);
     });
 
     it('invokes native connectToDevice and disconnect', async () => {

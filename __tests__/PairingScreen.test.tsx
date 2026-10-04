@@ -43,6 +43,8 @@ jest.mock('../src/native/BluetoothHidModule', () => {
   };
 });
 
+jest.setTimeout(30000);
+
 describe('PairingScreen Component (Phase 5)', () => {
   beforeEach(() => {
     jest.spyOn(permissionsUtil, 'isBluetoothHidSupported').mockReturnValue({

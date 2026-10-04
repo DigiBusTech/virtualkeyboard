@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothHidDeviceAppSdpSettings
 object HidConstants {
     const val ID_KEYBOARD: Byte = 1
     const val ID_MOUSE: Byte = 2
+    const val ID_CONSUMER: Byte = 3
 
     /**
      * Standard HID Report Descriptor for a combined Keyboard and Mouse peripheral.
@@ -38,10 +39,10 @@ object HidConstants {
         0x75.toByte(), 0x08.toByte(), //   Report Size (8 bits)
         0x95.toByte(), 0x06.toByte(), //   Report Count (6 bytes)
         0x15.toByte(), 0x00.toByte(), //   Logical Minimum (0)
-        0x25.toByte(), 0x65.toByte(), //   Logical Maximum (101)
+        0x26.toByte(), 0xFF.toByte(), 0x00.toByte(), // Logical Maximum (255)
         0x05.toByte(), 0x07.toByte(), //   Usage Page (Key Codes)
         0x19.toByte(), 0x00.toByte(), //   Usage Minimum (0)
-        0x29.toByte(), 0x65.toByte(), //   Usage Maximum (101)
+        0x2A.toByte(), 0xFF.toByte(), 0x00.toByte(), // Usage Maximum (255)
         0x81.toByte(), 0x00.toByte(), //   Input (Data, Array)              -> 6 Key Codes Array
         0xC0.toByte(),                // End Collection
 
@@ -73,12 +74,26 @@ object HidConstants {
         0x95.toByte(), 0x03.toByte(), //     Report Count (3 bytes: X, Y, Wheel)
         0x81.toByte(), 0x06.toByte(), //     Input (Data, Variable, Relative)
         0xC0.toByte(),                //   End Collection (Physical)
-        0xC0.toByte()                 // End Collection (Application)
+        0xC0.toByte(),                // End Collection (Application)
+
+        // ---------------- Consumer Control (Report ID 3) ----------------
+        0x05.toByte(), 0x0C.toByte(), // Usage Page (Consumer)
+        0x09.toByte(), 0x01.toByte(), // Usage (Consumer Control)
+        0xA1.toByte(), 0x01.toByte(), // Collection (Application)
+        0x85.toByte(), ID_CONSUMER,   //   Report ID (3)
+        0x15.toByte(), 0x00.toByte(), //   Logical Minimum (0)
+        0x26.toByte(), 0xFF.toByte(), 0x03.toByte(), // Logical Maximum (1023)
+        0x19.toByte(), 0x00.toByte(), //   Usage Minimum (0)
+        0x2A.toByte(), 0xFF.toByte(), 0x03.toByte(), // Usage Maximum (1023)
+        0x75.toByte(), 0x10.toByte(), //   Report Size (16 bits)
+        0x95.toByte(), 0x01.toByte(), //   Report Count (1)
+        0x81.toByte(), 0x00.toByte(), //   Input (Data, Array, Absolute)
+        0xC0.toByte()                 // End Collection
     )
 
-    private const val SDP_NAME = "Virtual Keyboard/Mouse"
-    private const val SDP_DESCRIPTION = "Virtual Keyboard and Mouse HID Peripheral"
-    private const val SDP_PROVIDER = "VirtualKeyboard"
+    private const val SDP_NAME = "DBV Keyboard"
+    private const val SDP_DESCRIPTION = "DBV Keyboard and Mouse HID Peripheral"
+    private const val SDP_PROVIDER = "DigiBusTech"
 
     val SDP_SETTINGS = BluetoothHidDeviceAppSdpSettings(
         SDP_NAME,

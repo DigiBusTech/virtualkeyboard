@@ -13,6 +13,7 @@ export interface KeyDefinition {
   isSpecial?: boolean;
   isArrow?: boolean;
   isCapsLock?: boolean;
+  isConsumer?: boolean;
 }
 
 export const MODIFIER_MASK = {
@@ -141,6 +142,42 @@ export const HID_KEY_CODES = {
   KEYPAD_9: 0x61,
   KEYPAD_0: 0x62,
   KEYPAD_PERIOD: 0x63,
+} as const;
+
+/**
+ * USB HID Usage Tables - Consumer Page (0x0C)
+ * Standard consumer and multimedia scan codes.
+ */
+export const HID_CONSUMER_CODES = {
+  // Audio Controls
+  MUTE: 0x00E2,
+  VOLUME_INCREMENT: 0x00E9,
+  VOLUME_DECREMENT: 0x00EA,
+
+  // Display Brightness Controls
+  BRIGHTNESS_INCREMENT: 0x006F,
+  BRIGHTNESS_DECREMENT: 0x0070,
+
+  // Keyboard Backlight
+  KEYBOARD_LIGHT_TOGGLE: 0x007C,
+  KEYBOARD_LIGHT_UP: 0x0079,
+  KEYBOARD_LIGHT_DOWN: 0x007A,
+
+  // Microphone
+  MIC_MUTE: 0x00A9,
+
+  // Media Playback
+  PLAY_PAUSE: 0x00CD,
+  SCAN_NEXT: 0x00B5,
+  SCAN_PREV: 0x00B6,
+  STOP: 0x00B7,
+  FAST_FORWARD: 0x00B3,
+  REWIND: 0x00B4,
+
+  // Application Launchers
+  CALCULATOR: 0x0192,
+  LOCAL_MACHINE_BROWSER: 0x0194, // Files / Explorer
+  INTERNET_BROWSER: 0x0196,     // Web Browser
 } as const;
 
 
@@ -284,41 +321,52 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
 
 // Function Keys & Media / Hardware Controls Layout
 export const FUNCTION_MEDIA_LAYOUT: KeyDefinition[][] = [
-  // Media / System quick bar
+  // Hardware & Media Controls (Consumer Page 0x0C)
   [
-    { label: 'PrtScn 📷', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.5, isSpecial: true },
-    { label: 'Mute 🔇', code: HID_KEY_CODES.MUTE, width: 1.3, isSpecial: true },
-    { label: 'Vol - 🔉', code: HID_KEY_CODES.VOLUME_DOWN, width: 1.3, isSpecial: true },
-    { label: 'Vol + 🔊', code: HID_KEY_CODES.VOLUME_UP, width: 1.3, isSpecial: true },
+    { label: 'Vol - 🔉', code: HID_CONSUMER_CODES.VOLUME_DECREMENT, isConsumer: true, isSpecial: true },
+    { label: 'Mute 🔇', code: HID_CONSUMER_CODES.MUTE, isConsumer: true, isSpecial: true },
+    { label: 'Vol + 🔊', code: HID_CONSUMER_CODES.VOLUME_INCREMENT, isConsumer: true, isSpecial: true },
+    { label: 'Bri - 🔅', code: HID_CONSUMER_CODES.BRIGHTNESS_DECREMENT, isConsumer: true, isSpecial: true },
+    { label: 'Bri + 🔆', code: HID_CONSUMER_CODES.BRIGHTNESS_INCREMENT, isConsumer: true, isSpecial: true },
+    { label: 'Mic 🎙️', code: HID_CONSUMER_CODES.MIC_MUTE, isConsumer: true, isSpecial: true },
+    { label: 'Kbd 💡', code: HID_CONSUMER_CODES.KEYBOARD_LIGHT_TOGGLE, isConsumer: true, isSpecial: true },
+  ],
+  // Media Playback & App Launchers (Consumer Page 0x0C)
+  [
+    { label: '⏮ Prev', code: HID_CONSUMER_CODES.SCAN_PREV, isConsumer: true, isSpecial: true },
+    { label: '⏯ Play', code: HID_CONSUMER_CODES.PLAY_PAUSE, isConsumer: true, isSpecial: true },
+    { label: '⏭ Next', code: HID_CONSUMER_CODES.SCAN_NEXT, isConsumer: true, isSpecial: true },
+    { label: 'Calc 🖩', code: HID_CONSUMER_CODES.CALCULATOR, isConsumer: true, isSpecial: true },
+    { label: 'Files 📁', code: HID_CONSUMER_CODES.LOCAL_MACHINE_BROWSER, isConsumer: true, isSpecial: true },
+    { label: 'Web 🌐', code: HID_CONSUMER_CODES.INTERNET_BROWSER, isConsumer: true, isSpecial: true },
+  ],
+  // Function keys F1 - F6 (Standard Keyboard Usage Page 0x07)
+  [
+    { label: 'F1', code: HID_KEY_CODES.F1 },
+    { label: 'F2', code: HID_KEY_CODES.F2 },
+    { label: 'F3', code: HID_KEY_CODES.F3 },
+    { label: 'F4', code: HID_KEY_CODES.F4 },
+    { label: 'F5', code: HID_KEY_CODES.F5 },
+    { label: 'F6', code: HID_KEY_CODES.F6 },
+  ],
+  // Function keys F7 - F12 (Standard Keyboard Usage Page 0x07)
+  [
+    { label: 'F7', code: HID_KEY_CODES.F7 },
+    { label: 'F8', code: HID_KEY_CODES.F8 },
+    { label: 'F9', code: HID_KEY_CODES.F9 },
+    { label: 'F10', code: HID_KEY_CODES.F10 },
+    { label: 'F11', code: HID_KEY_CODES.F11 },
+    { label: 'F12', code: HID_KEY_CODES.F12 },
+  ],
+  // Navigation & System controls
+  [
+    { label: 'PrtScn 📷', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.4, isSpecial: true },
     { label: 'Ins', code: HID_KEY_CODES.INSERT, isSpecial: true },
     { label: 'Home', code: HID_KEY_CODES.HOME, isSpecial: true },
     { label: 'End', code: HID_KEY_CODES.END, isSpecial: true },
-  ],
-  // Function keys F1 - F6
-  [
-    { label: 'F1 🔅', code: HID_KEY_CODES.F1 },
-    { label: 'F2 🔆', code: HID_KEY_CODES.F2 },
-    { label: 'F3 🗔', code: HID_KEY_CODES.F3 },
-    { label: 'F4 🚀', code: HID_KEY_CODES.F4 },
-    { label: 'F5 🔄', code: HID_KEY_CODES.F5 },
-    { label: 'F6 🔍', code: HID_KEY_CODES.F6 },
-  ],
-  // Function keys F7 - F12
-  [
-    { label: 'F7 ⏮️', code: HID_KEY_CODES.F7 },
-    { label: 'F8 ⏯️', code: HID_KEY_CODES.F8 },
-    { label: 'F9 ⏭️', code: HID_KEY_CODES.F9 },
-    { label: 'F10 🔇', code: HID_KEY_CODES.F10 },
-    { label: 'F11 ⛶', code: HID_KEY_CODES.F11 },
-    { label: 'F12 ⚙️', code: HID_KEY_CODES.F12 },
-  ],
-  // Navigation & Page controls
-  [
-    { label: 'PgUp 📄▲', code: HID_KEY_CODES.PAGE_UP, width: 1.5, isSpecial: true },
-    { label: 'PgDn 📄▼', code: HID_KEY_CODES.PAGE_DOWN, width: 1.5, isSpecial: true },
-    { label: 'ScrLk', code: HID_KEY_CODES.SCROLL_LOCK, width: 1.3, isSpecial: true },
-    { label: 'Pause', code: HID_KEY_CODES.PAUSE_BREAK, width: 1.3, isSpecial: true },
-    { label: 'Del ⌦', code: HID_KEY_CODES.DELETE, width: 1.5, isSpecial: true },
+    { label: 'PgUp', code: HID_KEY_CODES.PAGE_UP, isSpecial: true },
+    { label: 'PgDn', code: HID_KEY_CODES.PAGE_DOWN, isSpecial: true },
+    { label: 'Del ⌦', code: HID_KEY_CODES.DELETE, width: 1.2, isSpecial: true },
   ],
 ];
 

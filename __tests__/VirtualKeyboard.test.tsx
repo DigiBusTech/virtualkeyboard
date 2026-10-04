@@ -9,6 +9,7 @@ jest.mock('../src/native/BluetoothHidModule', () => {
     default: {
       sendKeyboardReport: jest.fn().mockResolvedValue(true),
       sendKeyboardMultiReport: jest.fn().mockResolvedValue(true),
+      sendConsumerReport: jest.fn().mockResolvedValue(true),
       getConnectionState: jest.fn().mockResolvedValue({
         state: 'CONNECTED',
         isRegistered: true,
@@ -100,5 +101,37 @@ describe('VirtualKeyboard Component', () => {
 
     // Modifier 2 = Left Shift
     expect(BluetoothHid.sendKeyboardReport).toHaveBeenCalledWith(2, 4);
+  });
+
+  it('sends consumer report on media key press and releases with 0', async () => {
+    let renderer: ReactTestRenderer.ReactTestRenderer;
+    await ReactTestRenderer.act(async () => {
+      renderer = ReactTestRenderer.create(<VirtualKeyboard />);
+    });
+
+    // Switch to F-Keys mode
+    const fKeysButton = renderer!.root.findByProps({
+      testID: 'mode-functions',
+    });
+    await ReactTestRenderer.act(async () => {
+      fKeysButton.props.onPress();
+    });
+
+    // Press Mute key (Consumer code 0x00E2)
+    const muteKey = renderer!.root.findByProps({
+      testID: 'keyboard-key-Mute 🔇',
+    });
+
+    await ReactTestRenderer.act(async () => {
+      muteKey.props.onPressIn();
+    });
+
+    expect(BluetoothHid.sendConsumerReport).toHaveBeenCalledWith(0x00E2);
+
+    await ReactTestRenderer.act(async () => {
+      muteKey.props.onPressOut();
+    });
+
+    expect(BluetoothHid.sendConsumerReport).toHaveBeenCalledWith(0);
   });
 });

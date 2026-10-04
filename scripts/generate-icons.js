@@ -25,6 +25,16 @@ function makeChunk(type, data) {
   return buf;
 }
 
+function distToSegment(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const l2 = dx * dx + dy * dy;
+  if (l2 === 0) return Math.hypot(px - x1, py - y1);
+  let t = ((px - x1) * dx + (py - y1) * dy) / l2;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+}
+
 function createPng(width, height, isRound) {
   const signature = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
   const ihdr = Buffer.alloc(13);
@@ -36,7 +46,8 @@ function createPng(width, height, isRound) {
   const cx = width / 2;
   const cy = height / 2;
   const r = (width / 2) * 0.94;
-  const cornerR = width * 0.24;
+  const cornerR = width * 0.22;
+  const strokeR = Math.max(2, width * 0.055);
 
   let offset = 0;
   for (let y = 0; y < height; y++) {
@@ -62,60 +73,50 @@ function createPng(width, height, isRound) {
         continue;
       }
 
-      // Base: #0F1014 Soft Matte
+      // Base: #0F1014 Soft Matte Dark
       let red = 15, green = 16, blue = 20, alpha = 255;
 
-      // Glow border
+      // Subtle Outer Edge Glow
       if (borderDist < 2.5) {
-        red = 59; green = 130; blue = 246; // Electric Blue #3B82F6
-      } else if (borderDist < 4.5) {
-        red = 30; green = 45; blue = 70;
+        red = 37; green = 99; blue = 235; // Brand Blue #2563EB
+      } else if (borderDist < 5.0) {
+        red = 25; green = 40; blue = 65;
       }
 
-      // Keyboard plate
-      const kbX1 = cx - width * 0.36;
-      const kbX2 = cx + width * 0.36;
-      const kbY1 = cy - height * 0.22;
-      const kbY2 = cy + height * 0.30;
-
-      // Wireless Bluetooth dot on top
-      const waveY = cy - height * 0.30;
-      if (Math.hypot(x - cx, y - waveY) < width * 0.05) {
-        red = 56; green = 189; blue = 248;
+      // Inner plate subtle elevated fill
+      const innerD = isRound ? Math.hypot(x - cx, y - cy) : Math.hypot(Math.max(Math.abs(x - cx) - (cx - cornerR * 1.3), 0), Math.max(Math.abs(y - cy) - (cy - cornerR * 1.3), 0));
+      if (innerD < r * 0.85) {
+        red = 20; green = 23; blue = 32;
       }
 
-      if (x >= kbX1 && x <= kbX2 && y >= kbY1 && y <= kbY2) {
-        red = 26; green = 28; blue = 35; // Plate #1A1C23
-        const rowH = (kbY2 - kbY1) / 3;
-        const pad = Math.max(1, width * 0.02);
-        const rowIdx = Math.floor((y - kbY1) / rowH);
-        const inRow = (y - (kbY1 + rowIdx * rowH)) > pad && (y - (kbY1 + (rowIdx + 1) * rowH)) < -pad;
+      // DigiBusTech `< / >` Symbol Coordinates
+      // Left bracket `<`
+      const dL1 = distToSegment(x, y, cx - width * 0.17, cy - height * 0.24, cx - width * 0.35, cy);
+      const dL2 = distToSegment(x, y, cx - width * 0.35, cy, cx - width * 0.17, cy + height * 0.24);
+      const dLeft = Math.min(dL1, dL2);
 
-        if (inRow) {
-          if (rowIdx < 2) {
-            const colW = (kbX2 - kbX1) / 4;
-            const colIdx = Math.floor((x - kbX1) / colW);
-            const inCol = (x - (kbX1 + colIdx * colW)) > pad && (x - (kbX1 + (colIdx + 1) * colW)) < -pad;
-            if (inCol) {
-              if ((rowIdx + colIdx) % 2 === 0) {
-                red = 59; green = 130; blue = 246; // Electric blue key
-              } else {
-                red = 39; green = 42; blue = 53; // Soft matte key
-              }
-            }
-          } else {
-            // Spacebar
-            const spX1 = kbX1 + width * 0.12;
-            const spX2 = kbX2 - width * 0.12;
-            if (x >= spX1 && x <= spX2) {
-              red = 56; green = 189; blue = 248; // Cyan spacebar
-            } else if (x > kbX1 + pad && x < spX1 - pad) {
-              red = 59; green = 130; blue = 246;
-            } else if (x > spX2 + pad && x < kbX2 - pad) {
-              red = 59; green = 130; blue = 246;
-            }
-          }
-        }
+      // Center slash `/`
+      const dSlash = distToSegment(x, y, cx + width * 0.08, cy - height * 0.28, cx - width * 0.08, cy + height * 0.28);
+
+      // Right bracket `>`
+      const dR1 = distToSegment(x, y, cx + width * 0.17, cy - height * 0.24, cx + width * 0.35, cy);
+      const dR2 = distToSegment(x, y, cx + width * 0.35, cy, cx + width * 0.17, cy + height * 0.24);
+      const dRight = Math.min(dR1, dR2);
+
+      const symbolDist = Math.min(dLeft, dSlash, dRight);
+
+      if (symbolDist <= strokeR) {
+        // Core symbol: Electric Blue (#2563EB -> #38BDF8 gradient)
+        const grad = (y / height);
+        red = Math.round(37 + grad * 20);
+        green = Math.round(99 + grad * 70);
+        blue = Math.round(235 + grad * 15);
+      } else if (symbolDist <= strokeR + 3.0) {
+        // Glow aura
+        const factor = 1 - (symbolDist - strokeR) / 3.0;
+        red = Math.round(red * (1 - factor) + 56 * factor);
+        green = Math.round(green * (1 - factor) + 189 * factor);
+        blue = Math.round(blue * (1 - factor) + 248 * factor);
       }
 
       rawData[offset++] = red;

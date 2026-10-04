@@ -25,7 +25,7 @@ export type KeyboardMode = 'qwerty' | 'functions' | 'numpad';
 
 export function VirtualKeyboard() {
   const { theme } = useTheme();
-  const { sendKeyboard, connectionState, connectedDevice } = useBluetoothHid();
+  const { sendKeyboard, sendConsumer, connectionState, connectedDevice } = useBluetoothHid();
   const [mode, setMode] = useState<KeyboardMode>('qwerty');
   const [modifier, setModifier] = useState<number>(MODIFIER_MASK.NONE);
   const [activeKey, setActiveKey] = useState<string | null>(null);
@@ -57,6 +57,10 @@ export function VirtualKeyboard() {
   const handlePressIn = useCallback(
     (key: KeyDefinition) => {
       setActiveKey(key.label);
+      if (key.isConsumer) {
+        sendConsumer(key.code);
+        return;
+      }
       if (key.code === HID_KEY_CODES.CAPS_LOCK) {
         setIsCapsLock(prev => !prev);
         sendKeyboard(modifier, HID_KEY_CODES.CAPS_LOCK);
@@ -79,19 +83,23 @@ export function VirtualKeyboard() {
         setModifier(prev => prev & ~MODIFIER_MASK.LEFT_SHIFT);
       }
     },
-    [modifier, sendKeyboard, toggleModifier],
+    [modifier, sendConsumer, sendKeyboard, toggleModifier],
   );
 
   const handlePressOut = useCallback(
     (key: KeyDefinition) => {
       setActiveKey(null);
+      if (key.isConsumer) {
+        sendConsumer(0);
+        return;
+      }
       if (key.isModifier) return;
       const effectiveModifier = key.isArrow
         ? modifier & ~MODIFIER_MASK.LEFT_SHIFT & ~MODIFIER_MASK.RIGHT_SHIFT
         : modifier;
       sendKeyboard(effectiveModifier, 0);
     },
-    [modifier, sendKeyboard],
+    [modifier, sendConsumer, sendKeyboard],
   );
 
   const sendCombo = useCallback(
@@ -104,6 +112,16 @@ export function VirtualKeyboard() {
     [sendKeyboard],
   );
 
+  const sendConsumerPress = useCallback(
+    (code: number) => {
+      sendConsumer(code);
+      setTimeout(() => {
+        sendConsumer(0);
+      }, 50);
+    },
+    [sendConsumer],
+  );
+
   const isConnected = connectionState === 'CONNECTED';
 
   const activeLayout =
@@ -113,10 +131,11 @@ export function VirtualKeyboard() {
       ? NUMPAD_LAYOUT
       : QWERTY_LAYOUT;
 
-  const keyHeight = isPhysicalLandscape
-    ? Math.max(32, Math.min(42, (height - 90) / (activeLayout.length || 5)))
-    : 44;
+  const landscapeKeyHeight = isPhysicalLandscape
+    ? Math.max(26, Math.min(36, (height - 110) / (activeLayout.length || 5)))
+    : Math.max(24, Math.min(30, (width - 170) / (activeLayout.length || 5)));
 
+  const keyHeight = isPhysicalLandscape ? landscapeKeyHeight : 44;
 
   const renderKeyboardContent = (isLandscapeView: boolean) => (
     <>
@@ -138,6 +157,7 @@ export function VirtualKeyboard() {
         {/* Mode Selector */}
         <View style={[styles.modeSelector, { backgroundColor: theme.bgInput }]}>
           <TouchableOpacity
+            testID="mode-qwerty"
             style={[styles.modePill, mode === 'qwerty' && styles.modePillActive]}
             onPress={() => setMode('qwerty')}
             activeOpacity={0.7}>
@@ -151,6 +171,7 @@ export function VirtualKeyboard() {
           </TouchableOpacity>
 
           <TouchableOpacity
+            testID="mode-functions"
             style={[
               styles.modePill,
               mode === 'functions' && styles.modePillActive,
@@ -167,6 +188,7 @@ export function VirtualKeyboard() {
           </TouchableOpacity>
 
           <TouchableOpacity
+            testID="mode-numpad"
             style={[styles.modePill, mode === 'numpad' && styles.modePillActive]}
             onPress={() => setMode('numpad')}
             activeOpacity={0.7}>
@@ -202,7 +224,7 @@ export function VirtualKeyboard() {
       </View>
 
       {/* Slim Macro Ribbon directly above keys */}
-      <QuickActionBar onSendCombo={sendCombo} />
+      <QuickActionBar onSendCombo={sendCombo} onSendConsumer={sendConsumerPress} />
 
       {/* Key Display Toast */}
       {activeKey && (
@@ -224,11 +246,7 @@ export function VirtualKeyboard() {
                 modifier={modifier}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
-                keyHeight={
-                  isLandscapeView
-                    ? Math.min(36, (width - 120) / (activeLayout.length || 5))
-                    : keyHeight
-                }
+                keyHeight={isLandscapeView ? landscapeKeyHeight : keyHeight}
                 isCapsLockActive={isCapsLock}
               />
             ))}
@@ -270,7 +288,8 @@ export function VirtualKeyboard() {
                 height: width,
                 transform: [{ rotate: '90deg' }],
                 paddingHorizontal: 28,
-                paddingVertical: 14,
+                paddingTop: 10,
+                paddingBottom: 48,
                 justifyContent: 'space-between',
                 backgroundColor: theme.bgDark,
               }}>

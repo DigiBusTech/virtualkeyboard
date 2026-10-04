@@ -96,6 +96,23 @@ export function KeyboardKey({
     ? theme.textPrimary
     : theme.textSecondary;
 
+  const baseFontSize =
+    keyHeight && keyHeight < 36
+      ? keyDef.isArrow
+        ? 14
+        : displayLabel.length > 4
+        ? 9
+        : displayLabel.length > 2
+        ? 10
+        : 12
+      : keyDef.isArrow
+      ? 18
+      : displayLabel.length > 4
+      ? 9
+      : displayLabel.length > 2
+      ? 11
+      : 15;
+
   return (
     <Pressable
       testID={`keyboard-key-${keyDef.label}`}
@@ -144,7 +161,7 @@ export function KeyboardKey({
             styles.keyText,
             {
               color: textColor,
-              fontSize: keyDef.isArrow ? 18 : displayLabel.length > 3 ? 10 : 15,
+              fontSize: baseFontSize,
             },
             keyDef.isSpecial && styles.keyTextSpecial,
             keyDef.isArrow && styles.arrowKeyText,

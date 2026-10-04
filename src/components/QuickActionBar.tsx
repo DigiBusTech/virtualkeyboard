@@ -1,15 +1,22 @@
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { HID_KEY_CODES, MODIFIER_MASK } from '../utils/hidKeycodes';
+import { HID_CONSUMER_CODES, HID_KEY_CODES, MODIFIER_MASK } from '../utils/hidKeycodes';
 import { styles } from './VirtualKeyboard.styles';
 
 interface QuickActionBarProps {
-  onSendCombo: (modBit: number, code: number) => void;
+  onSendCombo(modBit: number, code: number): void;
+  onSendConsumer?(code: number): void;
 }
 
-export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
+export function QuickActionBar({ onSendCombo, onSendConsumer }: QuickActionBarProps) {
   const { theme } = useTheme();
+
+  const handleConsumerPress = (code: number) => {
+    if (onSendConsumer) {
+      onSendConsumer(code);
+    }
+  };
 
   const pillStyle = [
     styles.macroPill,
@@ -74,23 +81,37 @@ export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
 
         <TouchableOpacity
           style={pillStyle}
-          onPress={() => onSendCombo(0, HID_KEY_CODES.MUTE)}
+          onPress={() => handleConsumerPress(HID_CONSUMER_CODES.MUTE)}
           activeOpacity={0.7}>
-          <Text style={pillTextStyle}>Mute</Text>
+          <Text style={pillTextStyle}>Mute 🔇</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={pillStyle}
-          onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_DOWN)}
+          onPress={() => handleConsumerPress(HID_CONSUMER_CODES.VOLUME_DECREMENT)}
           activeOpacity={0.7}>
-          <Text style={pillTextStyle}>Vol -</Text>
+          <Text style={pillTextStyle}>Vol - 🔉</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={pillStyle}
-          onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_UP)}
+          onPress={() => handleConsumerPress(HID_CONSUMER_CODES.VOLUME_INCREMENT)}
           activeOpacity={0.7}>
-          <Text style={pillTextStyle}>Vol +</Text>
+          <Text style={pillTextStyle}>Vol + 🔊</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={pillStyle}
+          onPress={() => handleConsumerPress(HID_CONSUMER_CODES.BRIGHTNESS_DECREMENT)}
+          activeOpacity={0.7}>
+          <Text style={pillTextStyle}>Bri - 🔅</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={pillStyle}
+          onPress={() => handleConsumerPress(HID_CONSUMER_CODES.BRIGHTNESS_INCREMENT)}
+          activeOpacity={0.7}>
+          <Text style={pillTextStyle}>Bri + 🔆</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import { THEME } from '../theme/theme';
 import { CreditsModal } from './CreditsModal';
+import { DigiBusLogo } from './DigiBusLogo';
 import { styles } from './MainAppView.styles';
 import { PairingScreen } from './PairingScreen';
 import { PermissionsDashboard } from './PermissionsDashboard';
@@ -36,7 +37,7 @@ export function MainAppView() {
       edges={['top', 'bottom']}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-      {/* Top Header Bar with Digi VirtualKeyboard Branding & Theme Toggle */}
+      {/* Top Header Bar with DBV Keyboard & Responsive Icon Actions */}
       <View
         style={[
           styles.headerBar,
@@ -44,13 +45,19 @@ export function MainAppView() {
           isLandscape && styles.headerBarLandscape,
         ]}>
         <View style={styles.headerBranding}>
-          <Text style={[styles.appName, { color: theme.textPrimary }]}>{THEME.branding.name}</Text>
+          <DigiBusLogo size={22} color={theme.accentBlue} />
+          <Text
+            style={[styles.appName, { color: theme.textPrimary }]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {THEME.branding.name}
+          </Text>
           <TouchableOpacity
             style={[styles.companyBadge, { backgroundColor: theme.bgKeyAccent }]}
             onPress={handleOpenBrand}
             activeOpacity={0.8}>
             <Text style={[styles.companyBadgeText, { color: theme.accentBlue }]}>
-              by {THEME.branding.company}
+              {THEME.branding.company}
             </Text>
           </TouchableOpacity>
         </View>
@@ -94,29 +101,33 @@ export function MainAppView() {
             </View>
           )}
 
-          {/* Light / Dark Mode Global Toggle */}
+          {/* Light / Dark Mode Global Toggle Icon Button */}
           <TouchableOpacity
             testID="theme-toggle"
+            accessibilityLabel={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             style={[
-              styles.infoButton,
+              styles.iconActionButton,
               { backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle },
             ]}
             onPress={toggleTheme}
             activeOpacity={0.7}>
-            <Text style={[styles.infoButtonText, { color: theme.textSecondary }]}>
-              {isDark ? '☀️ Light' : '🌙 Dark'}
+            <Text style={styles.iconActionButtonText}>
+              {isDark ? '☀️' : '🌙'}
             </Text>
           </TouchableOpacity>
 
+          {/* Info / About Icon Button */}
           <TouchableOpacity
+            testID="info-button"
+            accessibilityLabel="About and Help"
             style={[
-              styles.infoButton,
+              styles.iconActionButton,
               { backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle },
             ]}
             onPress={() => setShowCredits(true)}
             activeOpacity={0.7}>
-            <Text style={[styles.infoButtonText, { color: theme.textSecondary }]}>
-              Info
+            <Text style={styles.iconActionButtonText}>
+              ℹ️
             </Text>
           </TouchableOpacity>
         </View>

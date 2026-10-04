@@ -18,24 +18,25 @@ export interface UseBluetoothHidReturn {
   isDiscovering: boolean;
   loading: boolean;
   error: string | null;
-  register: () => Promise<boolean>;
-  unregister: () => Promise<boolean>;
-  connect: (address: string) => Promise<boolean>;
-  disconnect: () => Promise<boolean>;
-  refreshDevices: () => Promise<void>;
-  startDiscovery: () => Promise<boolean>;
-  cancelDiscovery: () => Promise<boolean>;
-  makeDiscoverable: (seconds?: number) => Promise<boolean>;
-  sendMouse: (
+  register(): Promise<boolean>;
+  unregister(): Promise<boolean>;
+  connect(address: string): Promise<boolean>;
+  disconnect(): Promise<boolean>;
+  refreshDevices(): Promise<void>;
+  startDiscovery(): Promise<boolean>;
+  cancelDiscovery(): Promise<boolean>;
+  makeDiscoverable(seconds?: number): Promise<boolean>;
+  sendMouse(
     buttons: number,
     dx: number,
     dy: number,
     wheel?: number,
-  ) => Promise<boolean>;
-  sendKeyboard: (
+  ): Promise<boolean>;
+  sendKeyboard(
     modifier: number,
     keyCodeOrKeys: number | number[],
-  ) => Promise<boolean>;
+  ): Promise<boolean>;
+  sendConsumer(usageCode: number): Promise<boolean>;
 }
 
 export function useBluetoothHid(): UseBluetoothHidReturn {
@@ -116,7 +117,7 @@ export function useBluetoothHid(): UseBluetoothHidReturn {
       discSub?.remove();
       finishSub?.remove();
     };
-  }, [refreshState]);
+  }, [isSupported, refreshState]);
 
   const register = useCallback(async (): Promise<boolean> => {
     setLoading(true);
@@ -285,6 +286,17 @@ export function useBluetoothHid(): UseBluetoothHidReturn {
     [],
   );
 
+  const sendConsumer = useCallback(
+    async (usageCode: number): Promise<boolean> => {
+      try {
+        return await BluetoothHid.sendConsumerReport(usageCode);
+      } catch {
+        return false;
+      }
+    },
+    [],
+  );
+
   return {
     isSupported,
     isRegistered,
@@ -306,5 +318,6 @@ export function useBluetoothHid(): UseBluetoothHidReturn {
     makeDiscoverable,
     sendMouse,
     sendKeyboard,
+    sendConsumer,
   };
 }
