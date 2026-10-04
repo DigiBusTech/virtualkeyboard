@@ -247,7 +247,6 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
     fun removeListeners(count: Int) {
         listenerCount -= count
     }
-}
 
     @ReactMethod
     fun registerApp(promise: Promise) {
