@@ -567,12 +567,7 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun makeDiscoverable(durationSeconds: Int, promise: Promise) {
-        val activity = currentActivity
-        if (activity == null) {
-            promise.reject("NO_ACTIVITY", "Current activity is null.")
-            return
-        }
-
+        val activity = reactApplicationContext.currentActivity
         try {
             val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
                 putExtra(
@@ -580,7 +575,12 @@ class BluetoothHidModule(reactContext: ReactApplicationContext) :
                     durationSeconds.coerceIn(1, 300)
                 )
             }
-            activity.startActivity(discoverableIntent)
+            if (activity != null) {
+                activity.startActivity(discoverableIntent)
+            } else {
+                discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                reactApplicationContext.startActivity(discoverableIntent)
+            }
             promise.resolve(true)
         } catch (e: SecurityException) {
             promise.reject("SECURITY_EXCEPTION", "Permission BLUETOOTH_ADVERTISE is required: ${e.message}", e)
