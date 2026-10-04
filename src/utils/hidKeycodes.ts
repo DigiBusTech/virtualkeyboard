@@ -11,6 +11,8 @@ export interface KeyDefinition {
   isModifier?: boolean;
   modifierBit?: number;
   isSpecial?: boolean;
+  isArrow?: boolean;
+  isCapsLock?: boolean;
 }
 
 export const MODIFIER_MASK = {
@@ -145,7 +147,7 @@ export const HID_KEY_CODES = {
 export const QWERTY_LAYOUT: KeyDefinition[][] = [
   // Numbers row
   [
-    { label: '`', shiftLabel: '~', code: HID_KEY_CODES.GRAVE },
+    { label: 'Esc', code: HID_KEY_CODES.ESCAPE, width: 1.1, isSpecial: true },
     { label: '1', shiftLabel: '!', code: HID_KEY_CODES.NUM_1 },
     { label: '2', shiftLabel: '@', code: HID_KEY_CODES.NUM_2 },
     { label: '3', shiftLabel: '#', code: HID_KEY_CODES.NUM_3 },
@@ -177,9 +179,15 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: ']', shiftLabel: '}', code: HID_KEY_CODES.RIGHT_BRACKET },
     { label: '\\', shiftLabel: '|', code: HID_KEY_CODES.BACKSLASH },
   ],
-  // Home row (ASDF)
+  // Home row (ASDF) with Caps Lock
   [
-    { label: 'Esc', code: HID_KEY_CODES.ESCAPE, width: 1.2, isSpecial: true },
+    {
+      label: 'Caps',
+      code: HID_KEY_CODES.CAPS_LOCK,
+      width: 1.3,
+      isSpecial: true,
+      isCapsLock: true,
+    },
     { label: 'A', code: HID_KEY_CODES.A },
     { label: 'S', code: HID_KEY_CODES.S },
     { label: 'D', code: HID_KEY_CODES.D },
@@ -193,7 +201,7 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: "'", shiftLabel: '"', code: HID_KEY_CODES.QUOTE },
     { label: 'Enter', code: HID_KEY_CODES.ENTER, width: 1.8, isSpecial: true },
   ],
-  // Bottom row (ZXCV)
+  // Bottom row (ZXCV) with Bold Up Arrow
   [
     {
       label: 'Shift',
@@ -213,10 +221,16 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: ',', shiftLabel: '<', code: HID_KEY_CODES.COMMA },
     { label: '.', shiftLabel: '>', code: HID_KEY_CODES.PERIOD },
     { label: '/', shiftLabel: '?', code: HID_KEY_CODES.SLASH },
-    { label: '▲', code: HID_KEY_CODES.UP_ARROW, isSpecial: true },
+    {
+      label: '▲',
+      code: HID_KEY_CODES.UP_ARROW,
+      width: 1.3,
+      isSpecial: true,
+      isArrow: true,
+    },
     { label: 'Del', code: HID_KEY_CODES.DELETE, width: 1.1, isSpecial: true },
   ],
-  // Modifier / Space row
+  // Modifier / Space row with Bold Left, Down, Right Arrows
   [
     {
       label: 'Ctrl',
@@ -242,10 +256,28 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
       width: 1.2,
       isSpecial: true,
     },
-    { label: 'Space', code: HID_KEY_CODES.SPACE, width: 4.5 },
-    { label: '◄', code: HID_KEY_CODES.LEFT_ARROW, isSpecial: true },
-    { label: '▼', code: HID_KEY_CODES.DOWN_ARROW, isSpecial: true },
-    { label: '►', code: HID_KEY_CODES.RIGHT_ARROW, isSpecial: true },
+    { label: 'Space', code: HID_KEY_CODES.SPACE, width: 4.2 },
+    {
+      label: '◄',
+      code: HID_KEY_CODES.LEFT_ARROW,
+      width: 1.3,
+      isSpecial: true,
+      isArrow: true,
+    },
+    {
+      label: '▼',
+      code: HID_KEY_CODES.DOWN_ARROW,
+      width: 1.3,
+      isSpecial: true,
+      isArrow: true,
+    },
+    {
+      label: '►',
+      code: HID_KEY_CODES.RIGHT_ARROW,
+      width: 1.3,
+      isSpecial: true,
+      isArrow: true,
+    },
   ],
 ];
 
@@ -254,39 +286,39 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
 export const FUNCTION_MEDIA_LAYOUT: KeyDefinition[][] = [
   // Media / System quick bar
   [
-    { label: 'PrtScn', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.5, isSpecial: true },
-    { label: 'Mute', code: HID_KEY_CODES.MUTE, width: 1.3, isSpecial: true },
-    { label: 'Vol -', code: HID_KEY_CODES.VOLUME_DOWN, width: 1.3, isSpecial: true },
-    { label: 'Vol +', code: HID_KEY_CODES.VOLUME_UP, width: 1.3, isSpecial: true },
+    { label: 'PrtScn 📷', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.5, isSpecial: true },
+    { label: 'Mute 🔇', code: HID_KEY_CODES.MUTE, width: 1.3, isSpecial: true },
+    { label: 'Vol - 🔉', code: HID_KEY_CODES.VOLUME_DOWN, width: 1.3, isSpecial: true },
+    { label: 'Vol + 🔊', code: HID_KEY_CODES.VOLUME_UP, width: 1.3, isSpecial: true },
     { label: 'Ins', code: HID_KEY_CODES.INSERT, isSpecial: true },
     { label: 'Home', code: HID_KEY_CODES.HOME, isSpecial: true },
     { label: 'End', code: HID_KEY_CODES.END, isSpecial: true },
   ],
   // Function keys F1 - F6
   [
-    { label: 'F1 Bright-', code: HID_KEY_CODES.F1 },
-    { label: 'F2 Bright+', code: HID_KEY_CODES.F2 },
-    { label: 'F3 Task', code: HID_KEY_CODES.F3 },
-    { label: 'F4 App', code: HID_KEY_CODES.F4 },
-    { label: 'F5 Reload', code: HID_KEY_CODES.F5 },
-    { label: 'F6 Search', code: HID_KEY_CODES.F6 },
+    { label: 'F1 🔅', code: HID_KEY_CODES.F1 },
+    { label: 'F2 🔆', code: HID_KEY_CODES.F2 },
+    { label: 'F3 🗔', code: HID_KEY_CODES.F3 },
+    { label: 'F4 🚀', code: HID_KEY_CODES.F4 },
+    { label: 'F5 🔄', code: HID_KEY_CODES.F5 },
+    { label: 'F6 🔍', code: HID_KEY_CODES.F6 },
   ],
   // Function keys F7 - F12
   [
-    { label: 'F7 Prev', code: HID_KEY_CODES.F7 },
-    { label: 'F8 Play', code: HID_KEY_CODES.F8 },
-    { label: 'F9 Next', code: HID_KEY_CODES.F9 },
-    { label: 'F10 Mute', code: HID_KEY_CODES.F10 },
-    { label: 'F11 Full', code: HID_KEY_CODES.F11 },
-    { label: 'F12 Menu', code: HID_KEY_CODES.F12 },
+    { label: 'F7 ⏮️', code: HID_KEY_CODES.F7 },
+    { label: 'F8 ⏯️', code: HID_KEY_CODES.F8 },
+    { label: 'F9 ⏭️', code: HID_KEY_CODES.F9 },
+    { label: 'F10 🔇', code: HID_KEY_CODES.F10 },
+    { label: 'F11 ⛶', code: HID_KEY_CODES.F11 },
+    { label: 'F12 ⚙️', code: HID_KEY_CODES.F12 },
   ],
   // Navigation & Page controls
   [
-    { label: 'PgUp', code: HID_KEY_CODES.PAGE_UP, width: 1.5, isSpecial: true },
-    { label: 'PgDn', code: HID_KEY_CODES.PAGE_DOWN, width: 1.5, isSpecial: true },
+    { label: 'PgUp 📄▲', code: HID_KEY_CODES.PAGE_UP, width: 1.5, isSpecial: true },
+    { label: 'PgDn 📄▼', code: HID_KEY_CODES.PAGE_DOWN, width: 1.5, isSpecial: true },
     { label: 'ScrLk', code: HID_KEY_CODES.SCROLL_LOCK, width: 1.3, isSpecial: true },
     { label: 'Pause', code: HID_KEY_CODES.PAUSE_BREAK, width: 1.3, isSpecial: true },
-    { label: 'Del', code: HID_KEY_CODES.DELETE, width: 1.5, isSpecial: true },
+    { label: 'Del ⌦', code: HID_KEY_CODES.DELETE, width: 1.5, isSpecial: true },
   ],
 ];
 

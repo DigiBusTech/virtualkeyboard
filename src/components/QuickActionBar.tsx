@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 import { HID_KEY_CODES, MODIFIER_MASK } from '../utils/hidKeycodes';
 import { styles } from './VirtualKeyboard.styles';
 
@@ -8,6 +9,14 @@ interface QuickActionBarProps {
 }
 
 export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
+  const { theme } = useTheme();
+
+  const pillStyle = [
+    styles.macroPill,
+    { backgroundColor: theme.bgCardElevated, borderColor: theme.borderSubtle },
+  ];
+  const pillTextStyle = [styles.macroPillText, { color: theme.textSecondary }];
+
   return (
     <View style={styles.macroRibbonWrapper}>
       <ScrollView
@@ -15,77 +24,78 @@ export function QuickActionBar({ onSendCombo }: QuickActionBarProps) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.macroRibbonContent}>
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_CTRL, HID_KEY_CODES.C)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Copy</Text>
+          <Text style={pillTextStyle}>Copy</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_CTRL, HID_KEY_CODES.V)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Paste</Text>
+          <Text style={pillTextStyle}>Paste</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_CTRL, HID_KEY_CODES.A)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Select All</Text>
+          <Text style={pillTextStyle}>Select All</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_CTRL, HID_KEY_CODES.Z)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Undo</Text>
+          <Text style={pillTextStyle}>Undo</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_ALT, HID_KEY_CODES.TAB)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Alt+Tab</Text>
+          <Text style={pillTextStyle}>Alt+Tab</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(MODIFIER_MASK.LEFT_GUI, HID_KEY_CODES.D)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Desktop</Text>
+          <Text style={pillTextStyle}>Desktop</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(0, HID_KEY_CODES.PRINT_SCREEN)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>PrtScn</Text>
+          <Text style={pillTextStyle}>PrtScn</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(0, HID_KEY_CODES.MUTE)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Mute</Text>
+          <Text style={pillTextStyle}>Mute</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_DOWN)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Vol -</Text>
+          <Text style={pillTextStyle}>Vol -</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.macroPill}
+          style={pillStyle}
           onPress={() => onSendCombo(0, HID_KEY_CODES.VOLUME_UP)}
           activeOpacity={0.7}>
-          <Text style={styles.macroPillText}>Vol +</Text>
+          <Text style={pillTextStyle}>Vol +</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
+
 
 

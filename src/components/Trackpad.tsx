@@ -203,7 +203,7 @@ export function Trackpad() {
         </TapGestureHandler>
       </View>
 
-      {/* Hardware-style bottom click buttons */}
+      {/* Hardware-style bottom click buttons with Center Scroll Pad */}
       <View style={styles.mouseButtonsRow}>
         <Pressable
           testID="trackpad-left-click"
@@ -217,7 +217,37 @@ export function Trackpad() {
           <Text style={styles.mouseButtonSubText}>(Primary)</Text>
         </Pressable>
 
-        <View style={styles.mouseButtonDivider} />
+        {/* Scroll & Middle Click Center Pad */}
+        <View style={styles.scrollCenterPad}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.scrollButton,
+              pressed && styles.mouseButtonPressed,
+            ]}
+            onPress={() => sendMouse(0, 0, 0, 1)}>
+            <Text style={styles.scrollArrowText}>▲</Text>
+          </Pressable>
+
+          <Pressable
+            testID="trackpad-middle-click"
+            style={({ pressed }) => [
+              styles.middleClickButton,
+              pressed && styles.mouseButtonPressed,
+            ]}
+            onPressIn={() => sendMouse(4, 0, 0, 0)}
+            onPressOut={() => sendMouse(0, 0, 0, 0)}>
+            <Text style={styles.middleClickText}>SCROLL</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.scrollButton,
+              pressed && styles.mouseButtonPressed,
+            ]}
+            onPress={() => sendMouse(0, 0, 0, -1)}>
+            <Text style={styles.scrollArrowText}>▼</Text>
+          </Pressable>
+        </View>
 
         <Pressable
           testID="trackpad-right-click"
@@ -233,5 +263,4 @@ export function Trackpad() {
       </View>
     </View>
   );
-
 }

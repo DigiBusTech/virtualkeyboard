@@ -6,9 +6,11 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 import { useBluetoothHid } from '../hooks/useBluetoothHid';
 import {
   FUNCTION_MEDIA_LAYOUT,
+  HID_KEY_CODES,
   KeyDefinition,
   MODIFIER_MASK,
   NUMPAD_LAYOUT,
@@ -21,13 +23,17 @@ import { styles } from './VirtualKeyboard.styles';
 export type KeyboardMode = 'qwerty' | 'functions' | 'numpad';
 
 export function VirtualKeyboard() {
+  const { theme } = useTheme();
   const { sendKeyboard, connectionState, connectedDevice } = useBluetoothHid();
   const [mode, setMode] = useState<KeyboardMode>('qwerty');
   const [modifier, setModifier] = useState<number>(MODIFIER_MASK.NONE);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [isCapsLock, setIsCapsLock] = useState<boolean>(false);
+  const [isForceLandscape, setIsForceLandscape] = useState<boolean>(false);
 
   const { width, height } = useWindowDimensions();
-  const isLandscape = width > height;
+  const isPhysicalLandscape = width > height;
+  const isEffectiveLandscape = isPhysicalLandscape || isForceLandscape;
 
   const isShift = (modifier & MODIFIER_MASK.LEFT_SHIFT) !== 0;
   const isCtrl = (modifier & MODIFIER_MASK.LEFT_CTRL) !== 0;
@@ -39,6 +45,7 @@ export function VirtualKeyboard() {
     isCtrl ? 'CTRL' : null,
     isAlt ? 'ALT' : null,
     isGui ? 'WIN' : null,
+    isCapsLock ? 'CAPS' : null,
   ]
     .filter(Boolean)
     .join(' + ');
@@ -50,6 +57,11 @@ export function VirtualKeyboard() {
   const handlePressIn = useCallback(
     (key: KeyDefinition) => {
       setActiveKey(key.label);
+      if (key.code === HID_KEY_CODES.CAPS_LOCK) {
+        setIsCapsLock(prev => !prev);
+        sendKeyboard(modifier, HID_KEY_CODES.CAPS_LOCK);
+        return;
+      }
       if (key.isModifier && key.modifierBit) {
         toggleModifier(key.modifierBit);
         return;
@@ -87,14 +99,34 @@ export function VirtualKeyboard() {
       ? NUMPAD_LAYOUT
       : QWERTY_LAYOUT;
 
-  const keyHeight = isLandscape
-    ? Math.max(34, Math.min(46, (height - 90) / (activeLayout.length || 5)))
+  const effectiveHeight = isForceLandscape && !isPhysicalLandscape ? width : height;
+  const keyHeight = isEffectiveLandscape
+    ? Math.max(34, Math.min(46, (effectiveHeight - 90) / (activeLayout.length || 5)))
     : undefined;
 
+  const overlayStyle =
+    isForceLandscape && !isPhysicalLandscape
+      ? {
+          width: height,
+          height: width,
+          transform: [{ rotate: '90deg' }],
+          position: 'absolute' as const,
+          top: (height - width) / 2,
+          left: (width - height) / 2,
+          zIndex: 1000,
+        }
+      : undefined;
+
+
   return (
-    <View style={styles.container}>
-      {/* Top Header with Status & Mode Selector */}
-      <View style={styles.headerBar}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.bgDark },
+        overlayStyle,
+      ]}>
+      {/* Top Header with Status, Mode Selector & Rotate Toggle */}
+      <View style={[styles.headerBar, { backgroundColor: theme.bgCard, borderColor: theme.borderSubtle }]}>
         <View style={styles.headerLeft}>
           <Text
             style={
@@ -105,7 +137,7 @@ export function VirtualKeyboard() {
         </View>
 
         {/* Mode Selector */}
-        <View style={styles.modeSelector}>
+        <View style={[styles.modeSelector, { backgroundColor: theme.bgInput }]}>
           <TouchableOpacity
             style={[styles.modePill, mode === 'qwerty' && styles.modePillActive]}
             onPress={() => setMode('qwerty')}
@@ -139,6 +171,16 @@ export function VirtualKeyboard() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Dedicated Keyboard-Only Rotate Toggle */}
+        <TouchableOpacity
+          style={[styles.rotateButton, { backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }]}
+          onPress={() => setIsForceLandscape(prev => !prev)}
+          activeOpacity={0.7}>
+          <Text style={[styles.rotateButtonText, { color: theme.accentBlue }]}>
+            {isEffectiveLandscape ? '📱 Portrait' : '🔄 Landscape'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Slim Macro Ribbon directly above keys */}
@@ -165,6 +207,7 @@ export function VirtualKeyboard() {
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 keyHeight={keyHeight}
+                isCapsLockActive={isCapsLock}
               />
             ))}
           </View>
