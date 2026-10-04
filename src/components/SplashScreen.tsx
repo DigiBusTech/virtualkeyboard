@@ -107,7 +107,7 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
         </View>
 
         {/* Title & Tagline */}
-        <Text style={styles.appTitle}>Virtual HID</Text>
+        <Text style={styles.appTitle}>{THEME.branding.name}</Text>
         <Text style={styles.appSubtitle}>
           Serverless Bluetooth Mouse & Keyboard
         </Text>

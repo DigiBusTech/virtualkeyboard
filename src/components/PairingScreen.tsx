@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
+  Animated,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -25,6 +26,31 @@ export function PairingScreen() {
     makeDiscoverable,
   } = useBluetoothHid();
 
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isDiscovering) {
+      const loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 0.7,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      loop.start();
+      return () => loop.stop();
+    } else {
+      pulseAnim.setValue(1);
+    }
+  }, [isDiscovering, pulseAnim]);
+
   const isConnected = connectionState === 'CONNECTED';
 
   return (
@@ -45,29 +71,33 @@ export function PairingScreen() {
         </View>
 
         <View style={styles.actionRow}>
-          <TouchableOpacity
-            testID="btn-scan-devices"
-            style={[styles.primaryBtn, isDiscovering && styles.stopBtn]}
-            onPress={isDiscovering ? cancelDiscovery : startDiscovery}
-            disabled={loading}>
-            {isDiscovering ? (
-              <Text style={styles.btnText}>⏹️ Stop Scanning</Text>
-            ) : (
-              <Text style={styles.btnText}>🔍 Scan for Nearby PCs</Text>
-            )}
-          </TouchableOpacity>
+          <Animated.View style={[{ flex: 1, opacity: pulseAnim }]}>
+            <TouchableOpacity
+              testID="btn-scan-devices"
+              style={[styles.primaryBtn, isDiscovering && styles.stopBtn]}
+              onPress={isDiscovering ? cancelDiscovery : startDiscovery}
+              disabled={loading}
+              activeOpacity={0.8}>
+              {isDiscovering ? (
+                <Text style={styles.btnText}>Stop Scanning</Text>
+              ) : (
+                <Text style={styles.btnText}>Scan for Nearby PCs</Text>
+              )}
+            </TouchableOpacity>
+          </Animated.View>
 
           <TouchableOpacity
             testID="btn-make-discoverable"
             style={styles.secondaryBtn}
             onPress={() => makeDiscoverable(180)}
-            disabled={loading}>
-            <Text style={styles.btnText}>📡 Make Discoverable</Text>
+            disabled={loading}
+            activeOpacity={0.8}>
+            <Text style={styles.btnText}>Make Discoverable</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.infoBox}>
-          <Text style={styles.infoBoxTitle}>💡 How Pairing Works</Text>
+          <Text style={styles.infoBoxTitle}>How Pairing Works</Text>
           <Text style={styles.infoBoxText}>
             1. Tap "Make Discoverable" on your phone.{'\n'}
             2. Open Bluetooth Settings on your PC or Mac.{'\n'}
@@ -76,7 +106,11 @@ export function PairingScreen() {
           </Text>
         </View>
 
-        {error && <Text style={styles.errorText}>⚠️ {error}</Text>}
+        {error && (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
       </View>
       {/* Discovered Nearby Devices */}
       <View style={styles.card}>

@@ -158,7 +158,7 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: '0', shiftLabel: ')', code: HID_KEY_CODES.NUM_0 },
     { label: '-', shiftLabel: '_', code: HID_KEY_CODES.MINUS },
     { label: '=', shiftLabel: '+', code: HID_KEY_CODES.EQUAL },
-    { label: '⌫', code: HID_KEY_CODES.BACKSPACE, width: 1.4, isSpecial: true },
+    { label: 'Bksp', code: HID_KEY_CODES.BACKSPACE, width: 1.4, isSpecial: true },
   ],
   // QWERTY row
   [
@@ -191,16 +191,16 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: 'L', code: HID_KEY_CODES.L },
     { label: ';', shiftLabel: ':', code: HID_KEY_CODES.SEMICOLON },
     { label: "'", shiftLabel: '"', code: HID_KEY_CODES.QUOTE },
-    { label: 'Enter ↵', code: HID_KEY_CODES.ENTER, width: 1.8, isSpecial: true },
+    { label: 'Enter', code: HID_KEY_CODES.ENTER, width: 1.8, isSpecial: true },
   ],
   // Bottom row (ZXCV)
   [
     {
-      label: '⇧ Shift',
+      label: 'Shift',
       code: 0,
       isModifier: true,
       modifierBit: MODIFIER_MASK.LEFT_SHIFT,
-      width: 1.6,
+      width: 1.5,
       isSpecial: true,
     },
     { label: 'Z', code: HID_KEY_CODES.Z },
@@ -213,8 +213,8 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
     { label: ',', shiftLabel: '<', code: HID_KEY_CODES.COMMA },
     { label: '.', shiftLabel: '>', code: HID_KEY_CODES.PERIOD },
     { label: '/', shiftLabel: '?', code: HID_KEY_CODES.SLASH },
-    { label: '↑', code: HID_KEY_CODES.UP_ARROW, isSpecial: true },
-    { label: 'Del', code: HID_KEY_CODES.DELETE, width: 1.2, isSpecial: true },
+    { label: '▲', code: HID_KEY_CODES.UP_ARROW, isSpecial: true },
+    { label: 'Del', code: HID_KEY_CODES.DELETE, width: 1.1, isSpecial: true },
   ],
   // Modifier / Space row
   [
@@ -235,17 +235,17 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
       isSpecial: true,
     },
     {
-      label: '⊞ Win/Cmd',
+      label: 'Win',
       code: 0,
       isModifier: true,
       modifierBit: MODIFIER_MASK.LEFT_GUI,
-      width: 1.5,
+      width: 1.2,
       isSpecial: true,
     },
     { label: 'Space', code: HID_KEY_CODES.SPACE, width: 4.5 },
-    { label: '←', code: HID_KEY_CODES.LEFT_ARROW, isSpecial: true },
-    { label: '↓', code: HID_KEY_CODES.DOWN_ARROW, isSpecial: true },
-    { label: '→', code: HID_KEY_CODES.RIGHT_ARROW, isSpecial: true },
+    { label: '◄', code: HID_KEY_CODES.LEFT_ARROW, isSpecial: true },
+    { label: '▼', code: HID_KEY_CODES.DOWN_ARROW, isSpecial: true },
+    { label: '►', code: HID_KEY_CODES.RIGHT_ARROW, isSpecial: true },
   ],
 ];
 
@@ -254,39 +254,39 @@ export const QWERTY_LAYOUT: KeyDefinition[][] = [
 export const FUNCTION_MEDIA_LAYOUT: KeyDefinition[][] = [
   // Media / System quick bar
   [
-    { label: 'PrtScn 📷', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.5, isSpecial: true },
-    { label: 'Mute 🔇', code: HID_KEY_CODES.MUTE, width: 1.3, isSpecial: true },
-    { label: 'Vol - 🔉', code: HID_KEY_CODES.VOLUME_DOWN, width: 1.3, isSpecial: true },
-    { label: 'Vol + 🔊', code: HID_KEY_CODES.VOLUME_UP, width: 1.3, isSpecial: true },
+    { label: 'PrtScn', code: HID_KEY_CODES.PRINT_SCREEN, width: 1.5, isSpecial: true },
+    { label: 'Mute', code: HID_KEY_CODES.MUTE, width: 1.3, isSpecial: true },
+    { label: 'Vol -', code: HID_KEY_CODES.VOLUME_DOWN, width: 1.3, isSpecial: true },
+    { label: 'Vol +', code: HID_KEY_CODES.VOLUME_UP, width: 1.3, isSpecial: true },
     { label: 'Ins', code: HID_KEY_CODES.INSERT, isSpecial: true },
     { label: 'Home', code: HID_KEY_CODES.HOME, isSpecial: true },
     { label: 'End', code: HID_KEY_CODES.END, isSpecial: true },
   ],
-  // Function keys F1 - F6 (F1=Brightness Down, F2=Brightness Up on laptops)
+  // Function keys F1 - F6
   [
-    { label: 'F1 🔅', code: HID_KEY_CODES.F1 },
-    { label: 'F2 🔆', code: HID_KEY_CODES.F2 },
-    { label: 'F3 🗔', code: HID_KEY_CODES.F3 },
-    { label: 'F4 🚀', code: HID_KEY_CODES.F4 },
-    { label: 'F5 🔄', code: HID_KEY_CODES.F5 },
-    { label: 'F6 🔍', code: HID_KEY_CODES.F6 },
+    { label: 'F1 Bright-', code: HID_KEY_CODES.F1 },
+    { label: 'F2 Bright+', code: HID_KEY_CODES.F2 },
+    { label: 'F3 Task', code: HID_KEY_CODES.F3 },
+    { label: 'F4 App', code: HID_KEY_CODES.F4 },
+    { label: 'F5 Reload', code: HID_KEY_CODES.F5 },
+    { label: 'F6 Search', code: HID_KEY_CODES.F6 },
   ],
   // Function keys F7 - F12
   [
-    { label: 'F7 ⏮️', code: HID_KEY_CODES.F7 },
-    { label: 'F8 ⏯️', code: HID_KEY_CODES.F8 },
-    { label: 'F9 ⏭️', code: HID_KEY_CODES.F9 },
-    { label: 'F10 🔇', code: HID_KEY_CODES.F10 },
-    { label: 'F11 ⛶', code: HID_KEY_CODES.F11 },
-    { label: 'F12 ⚙️', code: HID_KEY_CODES.F12 },
+    { label: 'F7 Prev', code: HID_KEY_CODES.F7 },
+    { label: 'F8 Play', code: HID_KEY_CODES.F8 },
+    { label: 'F9 Next', code: HID_KEY_CODES.F9 },
+    { label: 'F10 Mute', code: HID_KEY_CODES.F10 },
+    { label: 'F11 Full', code: HID_KEY_CODES.F11 },
+    { label: 'F12 Menu', code: HID_KEY_CODES.F12 },
   ],
   // Navigation & Page controls
   [
-    { label: 'PgUp 📄▲', code: HID_KEY_CODES.PAGE_UP, width: 1.5, isSpecial: true },
-    { label: 'PgDn 📄▼', code: HID_KEY_CODES.PAGE_DOWN, width: 1.5, isSpecial: true },
+    { label: 'PgUp', code: HID_KEY_CODES.PAGE_UP, width: 1.5, isSpecial: true },
+    { label: 'PgDn', code: HID_KEY_CODES.PAGE_DOWN, width: 1.5, isSpecial: true },
     { label: 'ScrLk', code: HID_KEY_CODES.SCROLL_LOCK, width: 1.3, isSpecial: true },
     { label: 'Pause', code: HID_KEY_CODES.PAUSE_BREAK, width: 1.3, isSpecial: true },
-    { label: 'Delete ⌦', code: HID_KEY_CODES.DELETE, width: 1.5, isSpecial: true },
+    { label: 'Del', code: HID_KEY_CODES.DELETE, width: 1.5, isSpecial: true },
   ],
 ];
 
@@ -308,13 +308,13 @@ export const NUMPAD_LAYOUT: KeyDefinition[][] = [
     { label: '4', code: HID_KEY_CODES.KEYPAD_4 },
     { label: '5', code: HID_KEY_CODES.KEYPAD_5 },
     { label: '6', code: HID_KEY_CODES.KEYPAD_6 },
-    { label: 'Backspace ⌫', code: HID_KEY_CODES.BACKSPACE, isSpecial: true },
+    { label: 'Bksp', code: HID_KEY_CODES.BACKSPACE, isSpecial: true },
   ],
   [
     { label: '1', code: HID_KEY_CODES.KEYPAD_1 },
     { label: '2', code: HID_KEY_CODES.KEYPAD_2 },
     { label: '3', code: HID_KEY_CODES.KEYPAD_3 },
-    { label: 'Enter ↵', code: HID_KEY_CODES.KEYPAD_ENTER, width: 1.5, isSpecial: true },
+    { label: 'Enter', code: HID_KEY_CODES.KEYPAD_ENTER, width: 1.5, isSpecial: true },
   ],
   [
     { label: '0', code: HID_KEY_CODES.KEYPAD_0, width: 2 },

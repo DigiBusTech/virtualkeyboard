@@ -54,29 +54,36 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           cp android/app/build/outputs/apk/release/app-release.apk VirtualKeyboard.apk
+          cp android/app/build/outputs/apk/release/app-release.apk DigiVirtualKeyboard.apk
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
           tag_name: v1.0.0
-          name: VirtualKeyboard v1.0.0
+          name: Digi VirtualKeyboard v1.0.0
           body: |
-            ## 📱 VirtualKeyboard v1.0.0 - Standalone Android Release
+            ## 📱 Digi VirtualKeyboard v1.0.0 - Standalone Android Release by DigiBusTech
 
-            ### Direct Download:
+            ### Direct Mobile Downloads:
+            - **[DigiVirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.0.0/DigiVirtualKeyboard.apk)**
             - **[VirtualKeyboard.apk](https://github.com/DigiBusTech/virtualkeyboard/releases/download/v1.0.0/VirtualKeyboard.apk)**
 
             ### Features:
+            - **Soft Matte Tactile UI**: Modern squircle chiclet keys with spring animation physics and soft charcoal depth.
             - **Serverless Bluetooth HID**: Works as a native mouse & keyboard for any PC or Mac. Zero software needed on host!
-            - **60Hz Gesture Trackpad**: 1-finger left click, 2-finger right click, 2-finger scroll, tactile hardware click buttons.
-            - **Virtual Keyboard**: QWERTY grid with USB HID Usage Table scan codes and latching modifiers (Shift, Ctrl, Alt, Win/Cmd).
-            - **Bluetooth Discovery**: Scan for nearby PCs/Macs or make phone discoverable.
+            - **60Hz Gesture Trackpad**: 1-finger left click, 2-finger right click, 2-finger scroll.
+            - **Macro Ribbon & Function Keys**: Slim scrollable touch bar for Copy, Paste, Undo, Desktop, and full F1-F12 + Media controls.
+            - **Landscape & Responsive**: Seamless automatic layout adaptation when rotating phone horizontally.
+            - **Auto-Registration**: Bluetooth HID profile auto-initializes on startup without manual setup.
 
             ### Installation:
-            1. Download `VirtualKeyboard.apk` directly on your Android device.
+            1. Download `DigiVirtualKeyboard.apk` directly on your Android device.
             2. Tap the downloaded file to install (allow "Install unknown apps" if prompted).
             3. Open the app, grant Bluetooth permissions, and pair with your PC/Mac!
-          files: VirtualKeyboard.apk
+          files: |
+            VirtualKeyboard.apk
+            DigiVirtualKeyboard.apk
+
 
 

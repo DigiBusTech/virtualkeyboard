@@ -81,7 +81,7 @@ describe('VirtualKeyboard Component', () => {
     });
 
     const pressableShift = renderer!.root.findByProps({
-      testID: 'keyboard-key-⇧ Shift',
+      testID: 'keyboard-key-Shift',
     });
 
     await ReactTestRenderer.act(async () => {

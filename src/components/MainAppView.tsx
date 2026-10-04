@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,6 +23,8 @@ export function MainAppView() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('trackpad');
   const [showCredits, setShowCredits] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   const handleOpenBrand = () => {
     Linking.openURL(THEME.branding.website).catch(() => {});
@@ -31,10 +34,13 @@ export function MainAppView() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-      {/* Top Header Bar with DigiBusTech Branding */}
-      <View style={styles.headerBar}>
+      {/* Top Header Bar with Digi VirtualKeyboard Branding */}
+      <View
+        style={[
+          styles.headerBar,
+          isLandscape && styles.headerBarLandscape,
+        ]}>
         <View style={styles.headerBranding}>
-          <Text style={styles.logoIcon}>⌨️</Text>
           <Text style={styles.appName}>{THEME.branding.name}</Text>
           <TouchableOpacity
             style={styles.companyBadge}
@@ -49,7 +55,7 @@ export function MainAppView() {
             style={styles.infoButton}
             onPress={() => setShowCredits(true)}
             activeOpacity={0.7}>
-            <Text style={styles.infoButtonText}>ℹ️ Info</Text>
+            <Text style={styles.infoButtonText}>Info</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -66,75 +72,81 @@ export function MainAppView() {
         {activeTab === 'bluetooth' && <PermissionsDashboard />}
       </View>
 
-      {/* Modern Tab Bar */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          testID="tab-keyboard"
-          style={[
-            styles.tabButton,
-            activeTab === 'keyboard' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('keyboard')}>
-          <Text style={styles.tabIcon}>⌨️</Text>
-          <Text
+      {/* Modern Floating Bottom Nav Pill */}
+      <View
+        style={[
+          styles.floatingNavWrapper,
+          isLandscape && styles.floatingNavWrapperLandscape,
+        ]}>
+        <View style={styles.floatingNavPill}>
+          <TouchableOpacity
+            testID="tab-keyboard"
             style={[
-              styles.tabLabel,
-              activeTab === 'keyboard' && styles.tabLabelActive,
-            ]}>
-            Keyboard
-          </Text>
-        </TouchableOpacity>
+              styles.tabButton,
+              activeTab === 'keyboard' && styles.tabButtonActive,
+            ]}
+            onPress={() => setActiveTab('keyboard')}
+            activeOpacity={0.7}>
+            <Text
+              style={[
+                styles.tabLabel,
+                activeTab === 'keyboard' && styles.tabLabelActive,
+              ]}>
+              Keyboard
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          testID="tab-trackpad"
-          style={[
-            styles.tabButton,
-            activeTab === 'trackpad' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('trackpad')}>
-          <Text style={styles.tabIcon}>🖱️</Text>
-          <Text
+          <TouchableOpacity
+            testID="tab-trackpad"
             style={[
-              styles.tabLabel,
-              activeTab === 'trackpad' && styles.tabLabelActive,
-            ]}>
-            Trackpad
-          </Text>
-        </TouchableOpacity>
+              styles.tabButton,
+              activeTab === 'trackpad' && styles.tabButtonActive,
+            ]}
+            onPress={() => setActiveTab('trackpad')}
+            activeOpacity={0.7}>
+            <Text
+              style={[
+                styles.tabLabel,
+                activeTab === 'trackpad' && styles.tabLabelActive,
+              ]}>
+              Trackpad
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          testID="tab-pairing"
-          style={[
-            styles.tabButton,
-            activeTab === 'pairing' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('pairing')}>
-          <Text style={styles.tabIcon}>📡</Text>
-          <Text
+          <TouchableOpacity
+            testID="tab-pairing"
             style={[
-              styles.tabLabel,
-              activeTab === 'pairing' && styles.tabLabelActive,
-            ]}>
-            Pairing
-          </Text>
-        </TouchableOpacity>
+              styles.tabButton,
+              activeTab === 'pairing' && styles.tabButtonActive,
+            ]}
+            onPress={() => setActiveTab('pairing')}
+            activeOpacity={0.7}>
+            <Text
+              style={[
+                styles.tabLabel,
+                activeTab === 'pairing' && styles.tabLabelActive,
+              ]}>
+              Pairing
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          testID="tab-bluetooth"
-          style={[
-            styles.tabButton,
-            activeTab === 'bluetooth' && styles.tabButtonActive,
-          ]}
-          onPress={() => setActiveTab('bluetooth')}>
-          <Text style={styles.tabIcon}>⚙️</Text>
-          <Text
+          <TouchableOpacity
+            testID="tab-bluetooth"
             style={[
-              styles.tabLabel,
-              activeTab === 'bluetooth' && styles.tabLabelActive,
-            ]}>
-            Setup
-          </Text>
-        </TouchableOpacity>
+              styles.tabButton,
+              activeTab === 'bluetooth' && styles.tabButtonActive,
+            ]}
+            onPress={() => setActiveTab('bluetooth')}
+            activeOpacity={0.7}>
+            <Text
+              style={[
+                styles.tabLabel,
+                activeTab === 'bluetooth' && styles.tabLabelActive,
+              ]}>
+              Setup
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Credits / Info Modal */}
@@ -145,5 +157,6 @@ export function MainAppView() {
     </SafeAreaView>
   );
 }
+
 
 

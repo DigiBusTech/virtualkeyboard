@@ -25,7 +25,6 @@ export function VirtualKeyboard() {
   const [mode, setMode] = useState<KeyboardMode>('qwerty');
   const [modifier, setModifier] = useState<number>(MODIFIER_MASK.NONE);
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const [isRotated, setIsRotated] = useState<boolean>(false);
 
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
@@ -39,7 +38,7 @@ export function VirtualKeyboard() {
     isShift ? 'SHIFT' : null,
     isCtrl ? 'CTRL' : null,
     isAlt ? 'ALT' : null,
-    isGui ? 'WIN/CMD' : null,
+    isGui ? 'WIN' : null,
   ]
     .filter(Boolean)
     .join(' + ');
@@ -88,9 +87,13 @@ export function VirtualKeyboard() {
       ? NUMPAD_LAYOUT
       : QWERTY_LAYOUT;
 
+  const keyHeight = isLandscape
+    ? Math.max(34, Math.min(46, (height - 90) / (activeLayout.length || 5)))
+    : undefined;
+
   return (
-    <View style={[styles.container, isRotated && !isLandscape && styles.rotatedContainer]}>
-      {/* Top Header with Status, Modes & Rotate Toggle */}
+    <View style={styles.container}>
+      {/* Top Header with Status & Mode Selector */}
       <View style={styles.headerBar}>
         <View style={styles.headerLeft}>
           <Text
@@ -105,7 +108,8 @@ export function VirtualKeyboard() {
         <View style={styles.modeSelector}>
           <TouchableOpacity
             style={[styles.modePill, mode === 'qwerty' && styles.modePillActive]}
-            onPress={() => setMode('qwerty')}>
+            onPress={() => setMode('qwerty')}
+            activeOpacity={0.7}>
             <Text
               style={[styles.modeText, mode === 'qwerty' && styles.modeTextActive]}>
               QWERTY
@@ -114,7 +118,8 @@ export function VirtualKeyboard() {
 
           <TouchableOpacity
             style={[styles.modePill, mode === 'functions' && styles.modePillActive]}
-            onPress={() => setMode('functions')}>
+            onPress={() => setMode('functions')}
+            activeOpacity={0.7}>
             <Text
               style={[
                 styles.modeText,
@@ -126,26 +131,17 @@ export function VirtualKeyboard() {
 
           <TouchableOpacity
             style={[styles.modePill, mode === 'numpad' && styles.modePillActive]}
-            onPress={() => setMode('numpad')}>
+            onPress={() => setMode('numpad')}
+            activeOpacity={0.7}>
             <Text
               style={[styles.modeText, mode === 'numpad' && styles.modeTextActive]}>
               Numpad
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* In-app Rotation Toggle */}
-        <TouchableOpacity
-          style={styles.rotateButton}
-          onPress={() => setIsRotated(prev => !prev)}
-          activeOpacity={0.7}>
-          <Text style={styles.rotateButtonText}>
-            {isRotated ? '📱 Normal' : '🔄 Rotate'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Quick Action Shortcuts Strip */}
+      {/* Slim Macro Ribbon directly above keys */}
       <QuickActionBar onSendCombo={sendCombo} />
 
       {/* Key Display Toast */}
@@ -168,6 +164,7 @@ export function VirtualKeyboard() {
                 modifier={modifier}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
+                keyHeight={keyHeight}
               />
             ))}
           </View>
@@ -176,4 +173,5 @@ export function VirtualKeyboard() {
     </View>
   );
 }
+
 

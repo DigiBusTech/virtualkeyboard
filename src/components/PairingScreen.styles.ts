@@ -14,10 +14,10 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '900',
+    fontSize: 22,
+    fontWeight: '800',
     color: THEME.colors.textPrimary,
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
   },
   subtitle: {
     fontSize: 13,
@@ -31,7 +31,11 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: THEME.colors.borderSubtle,
-    elevation: 3,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
   },
   cardHeaderRow: {
     flexDirection: 'row',
@@ -40,10 +44,10 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardTitle: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: THEME.colors.accentCyan,
-    letterSpacing: 1.2,
+    fontSize: 11,
+    fontWeight: '700',
+    color: THEME.colors.textSecondary,
+    letterSpacing: 1,
   },
   actionRow: {
     flexDirection: 'row',
@@ -55,11 +59,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: THEME.colors.accentBlue,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    elevation: 4,
   },
   stopBtn: {
     backgroundColor: THEME.colors.accentRose,
@@ -68,7 +71,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.colors.bgSurface,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -94,25 +97,25 @@ export const styles = StyleSheet.create({
   },
   deviceCardActive: {
     borderColor: THEME.colors.accentEmerald,
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
   },
   deviceInfo: {
     flex: 1,
     marginRight: 8,
   },
   deviceName: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
     color: THEME.colors.textPrimary,
   },
   deviceAddress: {
     fontSize: 11,
     color: THEME.colors.textMuted,
-    marginTop: 3,
+    marginTop: 2,
   },
   connectBtn: {
     backgroundColor: THEME.colors.accentBlue,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
   },
@@ -139,9 +142,9 @@ export const styles = StyleSheet.create({
     borderColor: THEME.colors.borderSubtle,
   },
   infoBoxTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: THEME.colors.accentCyan,
+    fontSize: 12,
+    fontWeight: '700',
+    color: THEME.colors.accentBlue,
     marginBottom: 6,
   },
   infoBoxText: {
@@ -149,10 +152,20 @@ export const styles = StyleSheet.create({
     color: THEME.colors.textSecondary,
     lineHeight: 18,
   },
+  errorBanner: {
+    backgroundColor: THEME.colors.errorBg,
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
   errorText: {
-    color: THEME.colors.accentRose,
+    color: THEME.colors.errorText,
     fontSize: 12,
-    marginTop: 8,
+    fontWeight: '600',
+    lineHeight: 16,
   },
 });
+
 
